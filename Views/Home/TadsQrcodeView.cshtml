@@ -1,0 +1,198 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (tadsQrcodeView.ActionResult is EmptyResult) { // Terminate page
+        return;
+    }
+
+    // Layout
+    if (!tadsQrcodeView.UseLayout) // UseLayout = false // DN
+        Layout = "";
+    else
+        Layout = "_Layout";
+
+    // Local variables (Temp data)
+    #pragma warning disable 168
+    string? sqlWrk, filterWrk, whereWrk, curVal, dispVal;
+    List<Dictionary<string, object>>? rswrk;
+    string[]? arWrk;
+    List<object?>? listWrk;
+    object? guidWrk;
+    Func<string>? lookupFilter;
+    #pragma warning restore 168
+}
+@if (!tadsQrcodeView.IsExport()) {
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+}
+@if (!tadsQrcodeView.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+    @tadsQrcodeView.ExportOptions.RenderBody()
+    @tadsQrcodeView.OtherOptions.RenderBody()
+</div>
+}
+@tadsQrcodeView.ShowPageHeader()
+@tadsQrcodeView.ShowMessages()
+<main class="view">
+@if (!tadsQrcodeView.IsModal) {
+if (!tadsQrcodeView.IsExport()) {
+@tadsQrcodeView.Pager.Render()
+}
+}
+<form name="fTADS_QRCODEview" id="fTADS_QRCODEview" class="ew-form ew-view-form overlay-wrapper" action="@AppPath(CurrentPageName())" method="post" novalidate autocomplete="off">
+@if (!tadsQrcodeView.IsExport()) {
+<script>
+var currentTable = @Html.Raw(ConvertToJson(tadsQrcodeView.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { TADS_QRCODE: currentTable } });
+var currentPageID = ew.PAGE_ID = "view";
+var currentForm;
+var fTADS_QRCODEview;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("fTADS_QRCODEview")
+        .setPageId("view")
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+}
+@if (CurrentPage.CheckToken) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+<input type="hidden" name="modal" value="@ConvertToInt(tadsQrcodeView.IsModal)">
+<table class="@(tadsQrcodeView.TableClass)">
+@if (tadsQrcodeView.ID.Visible) { // tadsQrcodeView.ID.Visible (begin)
+    <tr id="r_ID" @Html.Raw(tadsQrcodeView.ID.RowAttributes)>
+        <td class="@(tadsQrcodeView.TableLeftColumnClass)"><span id="elh_TADS_QRCODE_ID">@Html.Raw(tadsQrcodeView.ID.Caption)</span></td>
+        <td data-name="ID" @Html.Raw(tadsQrcodeView.ID.CellAttributes)>
+<span id="el_TADS_QRCODE_ID">
+<span @Html.Raw(tadsQrcodeView.ID.ViewAttributes)>
+@Html.Raw(tadsQrcodeView.ID.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* tadsQrcodeView.ID.Visible (end) *@
+@if (tadsQrcodeView.COD.Visible) { // tadsQrcodeView.COD.Visible (begin)
+    <tr id="r_COD" @Html.Raw(tadsQrcodeView.COD.RowAttributes)>
+        <td class="@(tadsQrcodeView.TableLeftColumnClass)"><span id="elh_TADS_QRCODE_COD">@Html.Raw(tadsQrcodeView.COD.Caption)</span></td>
+        <td data-name="COD" @Html.Raw(tadsQrcodeView.COD.CellAttributes)>
+<span id="el_TADS_QRCODE_COD">
+<span @Html.Raw(tadsQrcodeView.COD.ViewAttributes)>
+@Html.Raw(tadsQrcodeView.COD.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* tadsQrcodeView.COD.Visible (end) *@
+@if (tadsQrcodeView.DES.Visible) { // tadsQrcodeView.DES.Visible (begin)
+    <tr id="r_DES" @Html.Raw(tadsQrcodeView.DES.RowAttributes)>
+        <td class="@(tadsQrcodeView.TableLeftColumnClass)"><span id="elh_TADS_QRCODE_DES">@Html.Raw(tadsQrcodeView.DES.Caption)</span></td>
+        <td data-name="DES" @Html.Raw(tadsQrcodeView.DES.CellAttributes)>
+<span id="el_TADS_QRCODE_DES">
+<span @Html.Raw(tadsQrcodeView.DES.ViewAttributes)>
+@Html.Raw(tadsQrcodeView.DES.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* tadsQrcodeView.DES.Visible (end) *@
+@if (tadsQrcodeView.CMD.Visible) { // tadsQrcodeView.CMD.Visible (begin)
+    <tr id="r_CMD" @Html.Raw(tadsQrcodeView.CMD.RowAttributes)>
+        <td class="@(tadsQrcodeView.TableLeftColumnClass)"><span id="elh_TADS_QRCODE_CMD">@Html.Raw(tadsQrcodeView.CMD.Caption)</span></td>
+        <td data-name="CMD" @Html.Raw(tadsQrcodeView.CMD.CellAttributes)>
+<span id="el_TADS_QRCODE_CMD">
+<span @Html.Raw(tadsQrcodeView.CMD.ViewAttributes)>
+@Html.Raw(tadsQrcodeView.CMD.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* tadsQrcodeView.CMD.Visible (end) *@
+@if (tadsQrcodeView.FRM.Visible) { // tadsQrcodeView.FRM.Visible (begin)
+    <tr id="r_FRM" @Html.Raw(tadsQrcodeView.FRM.RowAttributes)>
+        <td class="@(tadsQrcodeView.TableLeftColumnClass)"><span id="elh_TADS_QRCODE_FRM">@Html.Raw(tadsQrcodeView.FRM.Caption)</span></td>
+        <td data-name="FRM" @Html.Raw(tadsQrcodeView.FRM.CellAttributes)>
+<span id="el_TADS_QRCODE_FRM">
+<span @Html.Raw(tadsQrcodeView.FRM.ViewAttributes)>
+@Html.Raw(tadsQrcodeView.FRM.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* tadsQrcodeView.FRM.Visible (end) *@
+@if (tadsQrcodeView.LBL.Visible) { // tadsQrcodeView.LBL.Visible (begin)
+    <tr id="r_LBL" @Html.Raw(tadsQrcodeView.LBL.RowAttributes)>
+        <td class="@(tadsQrcodeView.TableLeftColumnClass)"><span id="elh_TADS_QRCODE_LBL">@Html.Raw(tadsQrcodeView.LBL.Caption)</span></td>
+        <td data-name="LBL" @Html.Raw(tadsQrcodeView.LBL.CellAttributes)>
+<span id="el_TADS_QRCODE_LBL">
+<span @Html.Raw(tadsQrcodeView.LBL.ViewAttributes)>
+@Html.Raw(tadsQrcodeView.LBL.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* tadsQrcodeView.LBL.Visible (end) *@
+@if (tadsQrcodeView.COR.Visible) { // tadsQrcodeView.COR.Visible (begin)
+    <tr id="r_COR" @Html.Raw(tadsQrcodeView.COR.RowAttributes)>
+        <td class="@(tadsQrcodeView.TableLeftColumnClass)"><span id="elh_TADS_QRCODE_COR">@Html.Raw(tadsQrcodeView.COR.Caption)</span></td>
+        <td data-name="COR" @Html.Raw(tadsQrcodeView.COR.CellAttributes)>
+<span id="el_TADS_QRCODE_COR">
+<span @Html.Raw(tadsQrcodeView.COR.ViewAttributes)>
+@Html.Raw(tadsQrcodeView.COR.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* tadsQrcodeView.COR.Visible (end) *@
+@if (tadsQrcodeView.ETAPA.Visible) { // tadsQrcodeView.ETAPA.Visible (begin)
+    <tr id="r_ETAPA" @Html.Raw(tadsQrcodeView.ETAPA.RowAttributes)>
+        <td class="@(tadsQrcodeView.TableLeftColumnClass)"><span id="elh_TADS_QRCODE_ETAPA">@Html.Raw(tadsQrcodeView.ETAPA.Caption)</span></td>
+        <td data-name="ETAPA" @Html.Raw(tadsQrcodeView.ETAPA.CellAttributes)>
+<span id="el_TADS_QRCODE_ETAPA">
+<span @Html.Raw(tadsQrcodeView.ETAPA.ViewAttributes)>
+@Html.Raw(tadsQrcodeView.ETAPA.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* tadsQrcodeView.ETAPA.Visible (end) *@
+@if (tadsQrcodeView.QRCODE.Visible) { // tadsQrcodeView.QRCODE.Visible (begin)
+    <tr id="r_QRCODE" @Html.Raw(tadsQrcodeView.QRCODE.RowAttributes)>
+        <td class="@(tadsQrcodeView.TableLeftColumnClass)"><span id="elh_TADS_QRCODE_QRCODE">@Html.Raw(tadsQrcodeView.QRCODE.Caption)</span></td>
+        <td data-name="QRCODE" @Html.Raw(tadsQrcodeView.QRCODE.CellAttributes)>
+<span id="el_TADS_QRCODE_QRCODE">
+<span @Html.Raw(tadsQrcodeView.QRCODE.ViewAttributes)>
+@Html.Raw(await GetFileViewTag((DbField)tadsQrcodeView.QRCODE, ConvertToString(tadsQrcodeView.QRCODE.GetViewValue()), false))
+</span>
+</span></td>
+    </tr>
+} @* tadsQrcodeView.QRCODE.Visible (end) *@
+@if (tadsQrcodeView.QRCODE2.Visible) { // tadsQrcodeView.QRCODE2.Visible (begin)
+    <tr id="r_QRCODE2" @Html.Raw(tadsQrcodeView.QRCODE2.RowAttributes)>
+        <td class="@(tadsQrcodeView.TableLeftColumnClass)"><span id="elh_TADS_QRCODE_QRCODE2">@Html.Raw(tadsQrcodeView.QRCODE2.Caption)</span></td>
+        <td data-name="QRCODE2" @Html.Raw(tadsQrcodeView.QRCODE2.CellAttributes)>
+<span id="el_TADS_QRCODE_QRCODE2">
+<span @Html.Raw(tadsQrcodeView.QRCODE2.ViewAttributes)>
+@Html.Raw(tadsQrcodeView.QRCODE2.GetViewValue())</span>
+</span></td>
+    </tr>
+} @* tadsQrcodeView.QRCODE2.Visible (end) *@
+</table>
+@{ tadsQrcodeView.CloseRecordset(); }
+</form>
+@if (!tadsQrcodeView.IsModal) {
+if (!tadsQrcodeView.IsExport()) {
+<div><!-- DN -->
+@tadsQrcodeView.Pager.Render()
+</div>
+}
+}
+</main>
+@tadsQrcodeView.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+@if (!tadsQrcodeView.IsExport()) {
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>
+}

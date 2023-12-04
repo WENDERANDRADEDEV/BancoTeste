@@ -1,0 +1,684 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (tadsQrcodeList.ActionResult is EmptyResult) { // Terminate page
+        return;
+    }
+
+    // Layout
+    if (!tadsQrcodeList.UseLayout) // UseLayout = false // DN
+        Layout = "";
+    else
+        Layout = "_Layout";
+
+    // Local variables (Temp data)
+    #pragma warning disable 168
+    string? sqlWrk, filterWrk, whereWrk, curVal, dispVal;
+    List<Dictionary<string, object>>? rswrk;
+    string[]? arWrk;
+    List<object?>? listWrk;
+    object? guidWrk;
+    Func<string>? lookupFilter;
+    #pragma warning restore 168
+}
+@if (!tadsQrcodeList.IsExport()) {
+<script>
+var currentTable = @Html.Raw(ConvertToJson(tadsQrcodeList.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { TADS_QRCODE: currentTable } });
+var currentPageID = ew.PAGE_ID = "list";
+var currentForm;
+var @(tadsQrcodeList.FormName);
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("@(tadsQrcodeList.FormName)")
+        .setPageId("list")
+        .setSubmitWithFetch(@(tadsQrcodeList.UseAjaxActions ? "true" : "false"))
+        .setFormKeyCountName("@(tadsQrcodeList.FormKeyCountName)")
+
+        // Add fields
+        .setFields([
+
+            ["ID", [fields.ID.visible && fields.ID.required ? ew.Validators.required(fields.ID.caption) : null], fields.ID.isInvalid],
+            ["COD", [fields.COD.visible && fields.COD.required ? ew.Validators.required(fields.COD.caption) : null], fields.COD.isInvalid],
+            ["DES", [fields.DES.visible && fields.DES.required ? ew.Validators.required(fields.DES.caption) : null], fields.DES.isInvalid],
+            ["CMD", [fields.CMD.visible && fields.CMD.required ? ew.Validators.required(fields.CMD.caption) : null], fields.CMD.isInvalid],
+            ["FRM", [fields.FRM.visible && fields.FRM.required ? ew.Validators.required(fields.FRM.caption) : null], fields.FRM.isInvalid],
+            ["LBL", [fields.LBL.visible && fields.LBL.required ? ew.Validators.required(fields.LBL.caption) : null], fields.LBL.isInvalid],
+            ["COR", [fields.COR.visible && fields.COR.required ? ew.Validators.required(fields.COR.caption) : null], fields.COR.isInvalid],
+            ["ETAPA", [fields.ETAPA.visible && fields.ETAPA.required ? ew.Validators.required(fields.ETAPA.caption) : null], fields.ETAPA.isInvalid],
+            ["QRCODE", [fields.QRCODE.visible && fields.QRCODE.required ? ew.Validators.fileRequired(fields.QRCODE.caption) : null], fields.QRCODE.isInvalid],
+            ["QRCODE2", [fields.QRCODE2.visible && fields.QRCODE2.required ? ew.Validators.required(fields.QRCODE2.caption) : null], fields.QRCODE2.isInvalid]
+        ])
+
+        // Check empty row
+        .setEmptyRow(
+            function (rowIndex) {
+                let fobj = this.getForm(),
+                    fields = [["COD",false],["DES",false],["CMD",false],["FRM",false],["LBL",false],["COR",false],["ETAPA",false],["QRCODE",false],["QRCODE2",false]];
+                if (fields.some(field => ew.valueChanged(fobj, rowIndex, ...field)))
+                    return false;
+                return true;
+            }
+        )
+
+        // Form_CustomValidate
+        .setCustomValidate(
+            function(fobj) { // DO NOT CHANGE THIS LINE!
+                    // Your custom validation code here, return false if invalid.
+                    return true;
+                }
+        )
+
+        // Use JavaScript validation or not
+        .setValidateRequired(ew.CLIENT_VALIDATE)
+
+        // Dynamic selection lists
+        .setLists({
+        })
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+}
+@if (!tadsQrcodeList.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+@if (tadsQrcodeList.TotalRecords > 0 && tadsQrcodeList.ExportOptions.Visible) {
+    tadsQrcodeList.ExportOptions.Render("body");
+}
+@if (tadsQrcodeList.ImportOptions.Visible) {
+    tadsQrcodeList.ImportOptions.Render("body");
+}
+@if (tadsQrcodeList.SearchOptions.Visible) {
+    tadsQrcodeList.SearchOptions.Render("body");
+}
+@if (tadsQrcodeList.FilterOptions.Visible) {
+    tadsQrcodeList.FilterOptions.Render("body");
+}
+</div>
+}
+@if (!tadsQrcodeList.IsModal) {
+<form name="fTADS_QRCODEsrch" id="fTADS_QRCODEsrch" class="ew-form ew-ext-search-form" action="@AppPath(CurrentPageName())" novalidate autocomplete="off">
+<div id="fTADS_QRCODEsrch_search_panel" class="mb-2 mb-sm-0 @(tadsQrcodeList.SearchPanelClass)"><!-- .ew-search-panel -->
+<script>
+var currentTable = @Html.Raw(ConvertToJson(tadsQrcodeList.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { TADS_QRCODE: currentTable } });
+var currentForm;
+var fTADS_QRCODEsrch, currentSearchForm, currentAdvancedSearchForm;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery,
+        fields = currentTable.fields;
+
+    // Form object for search
+    let form = new ew.FormBuilder()
+        .setId("fTADS_QRCODEsrch")
+        .setPageId("list")
+@if (tadsQrcodeList.UseAjaxActions) {
+        <text>.setSubmitWithFetch(true)</text>
+}
+
+        // Dynamic selection lists
+        .setLists({
+        })
+
+        // Filters
+        .setFilterList(@Html.Raw(await tadsQrcodeList.GetFilterList()))
+        .build();
+    window[form.id] = form;
+    currentSearchForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<input type="hidden" name="cmd" value="search">
+@if (!tadsQrcodeList.IsExport() && Empty(tadsQrcodeList.CurrentAction) && tadsQrcodeList.HasSearchFields()) { @* Show search form (begin) *@
+<div class="ew-extended-search container-fluid ps-2">
+<div class="row mb-0">
+    <div class="col-sm-auto px-0 pe-sm-2">
+        <div class="ew-basic-search input-group">
+            <input type="search" name="@(Config.TableBasicSearch)" id="@(Config.TableBasicSearch)" class="form-control ew-basic-search-keyword" value="@Html.Raw(HtmlEncode(tadsQrcodeList.BasicSearch.SessionKeyword))" placeholder="@(HtmlEncode(Language.Phrase("Search")))" aria-label="@(HtmlEncode(Language.Phrase("Search")))">
+            <input type="hidden" name="@(Config.TableBasicSearchType)" id="@(Config.TableBasicSearchType)" class="ew-basic-search-type" value="@(HtmlEncode(tadsQrcodeList.BasicSearch.SessionType))">
+            <button type="button" data-bs-toggle="dropdown" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" aria-haspopup="true" aria-expanded="false">
+                <span id="searchtype">@Html.Raw(tadsQrcodeList.BasicSearch.TypeNameShort)</span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end">
+                <button type="button" class="dropdown-item@(tadsQrcodeList.BasicSearch.SessionType == "" ? " active" : "")" form="fTADS_QRCODEsrch" data-ew-action="search-type">@Html.Raw(Language.Phrase("QuickSearchAuto"))</button>
+                <button type="button" class="dropdown-item@(tadsQrcodeList.BasicSearch.SessionType == "=" ? " active" : "")" form="fTADS_QRCODEsrch" data-ew-action="search-type" data-search-type="=">@Html.Raw(Language.Phrase("QuickSearchExact"))</button>
+                <button type="button" class="dropdown-item@(tadsQrcodeList.BasicSearch.SessionType == "AND" ? " active" : "")" form="fTADS_QRCODEsrch" data-ew-action="search-type" data-search-type="AND">@Html.Raw(Language.Phrase("QuickSearchAll"))</button>
+                <button type="button" class="dropdown-item@(tadsQrcodeList.BasicSearch.SessionType == "OR" ? " active" : "")" form="fTADS_QRCODEsrch" data-ew-action="search-type" data-search-type="OR">@Html.Raw(Language.Phrase("QuickSearchAny"))</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-auto mb-3">
+        <button class="btn btn-primary" name="btn-submit" id="btn-submit" type="submit">@Html.Raw(Language.Phrase("SearchBtn"))</button>
+    </div>
+</div>
+</div><!-- /.ew-extended-search -->
+} @* Show search form (end) *@
+</div><!-- /.ew-search-panel -->
+</form>
+}
+@tadsQrcodeList.ShowPageHeader()
+@tadsQrcodeList.ShowMessages()
+<main class="list @(tadsQrcodeList.TotalRecords == 0 && !tadsQrcodeList.IsAdd ? " ew-no-record" : "")">
+<div id="ew-list">
+@if (tadsQrcodeList.TotalRecords > 0 || !Empty(tadsQrcodeList.CurrentAction)) {
+<div class="card ew-card ew-grid@(tadsQrcodeList.IsAddOrEdit ? " ew-grid-add-edit" : "") @(tadsQrcodeList.TableGridClass)">
+@if (!tadsQrcodeList.IsExport()) {
+<div class="card-header ew-grid-upper-panel">
+@if (!tadsQrcodeList.IsGridAdd && !(tadsQrcodeList.IsGridEdit && tadsQrcodeList.ModalGridEdit) && !tadsQrcodeList.IsMultiEdit) {
+@Html.Raw(tadsQrcodeList.Pager.Render())
+}
+<div class="ew-list-other-options">
+@tadsQrcodeList.OtherOptions.RenderBody()
+</div>
+</div>
+}
+<form name="@(tadsQrcodeList.FormName)" id="@(tadsQrcodeList.FormName)" class="ew-form ew-list-form" action="@AppPath(tadsQrcodeList.PageName)" method="post" novalidate autocomplete="off">
+@if (CurrentPage.CheckToken) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+@if (tadsQrcodeList.IsModal) {
+<input type="hidden" name="modal" value="1">
+}
+<div id="gmp_TADS_QRCODE" class="card-body ew-grid-middle-panel @(tadsQrcodeList.TableContainerClass)" style="@(tadsQrcodeList.TableContainerStyle)">
+@if (tadsQrcodeList.TotalRecords > 0 || tadsQrcodeList.IsAdd || tadsQrcodeList.IsCopy || tadsQrcodeList.IsGridEdit || tadsQrcodeList.IsMultiEdit) {
+<table id="tbl_TADS_QRCODElist" class="@(tadsQrcodeList.TableClass)"><!-- .ew-table -->
+<thead>
+    <tr class="ew-table-header">
+@{
+    // Header row
+    tadsQrcodeList.RowType = RowType.Header;
+
+    // Render list options
+    await tadsQrcodeList.RenderListOptions();
+}
+@* Render list options (header, left) *@
+@tadsQrcodeList.ListOptions.RenderHeader("left")
+@if (tadsQrcodeList.ID.Visible) { // tadsQrcodeList.ID.Visible (begin)
+        <th data-name="ID" class="@(tadsQrcodeList.ID.HeaderCellClass)"><div id="elh_TADS_QRCODE_ID" class="TADS_QRCODE_ID">@Html.Raw(tadsQrcodeList.RenderFieldHeader(tadsQrcodeList.ID))</div></th>
+} @* tadsQrcodeList.ID.Visible (end) *@
+@if (tadsQrcodeList.COD.Visible) { // tadsQrcodeList.COD.Visible (begin)
+        <th data-name="COD" class="@(tadsQrcodeList.COD.HeaderCellClass)"><div id="elh_TADS_QRCODE_COD" class="TADS_QRCODE_COD">@Html.Raw(tadsQrcodeList.RenderFieldHeader(tadsQrcodeList.COD))</div></th>
+} @* tadsQrcodeList.COD.Visible (end) *@
+@if (tadsQrcodeList.DES.Visible) { // tadsQrcodeList.DES.Visible (begin)
+        <th data-name="DES" class="@(tadsQrcodeList.DES.HeaderCellClass)"><div id="elh_TADS_QRCODE_DES" class="TADS_QRCODE_DES">@Html.Raw(tadsQrcodeList.RenderFieldHeader(tadsQrcodeList.DES))</div></th>
+} @* tadsQrcodeList.DES.Visible (end) *@
+@if (tadsQrcodeList.CMD.Visible) { // tadsQrcodeList.CMD.Visible (begin)
+        <th data-name="CMD" class="@(tadsQrcodeList.CMD.HeaderCellClass)"><div id="elh_TADS_QRCODE_CMD" class="TADS_QRCODE_CMD">@Html.Raw(tadsQrcodeList.RenderFieldHeader(tadsQrcodeList.CMD))</div></th>
+} @* tadsQrcodeList.CMD.Visible (end) *@
+@if (tadsQrcodeList.FRM.Visible) { // tadsQrcodeList.FRM.Visible (begin)
+        <th data-name="FRM" class="@(tadsQrcodeList.FRM.HeaderCellClass)"><div id="elh_TADS_QRCODE_FRM" class="TADS_QRCODE_FRM">@Html.Raw(tadsQrcodeList.RenderFieldHeader(tadsQrcodeList.FRM))</div></th>
+} @* tadsQrcodeList.FRM.Visible (end) *@
+@if (tadsQrcodeList.LBL.Visible) { // tadsQrcodeList.LBL.Visible (begin)
+        <th data-name="LBL" class="@(tadsQrcodeList.LBL.HeaderCellClass)"><div id="elh_TADS_QRCODE_LBL" class="TADS_QRCODE_LBL">@Html.Raw(tadsQrcodeList.RenderFieldHeader(tadsQrcodeList.LBL))</div></th>
+} @* tadsQrcodeList.LBL.Visible (end) *@
+@if (tadsQrcodeList.COR.Visible) { // tadsQrcodeList.COR.Visible (begin)
+        <th data-name="COR" class="@(tadsQrcodeList.COR.HeaderCellClass)"><div id="elh_TADS_QRCODE_COR" class="TADS_QRCODE_COR">@Html.Raw(tadsQrcodeList.RenderFieldHeader(tadsQrcodeList.COR))</div></th>
+} @* tadsQrcodeList.COR.Visible (end) *@
+@if (tadsQrcodeList.ETAPA.Visible) { // tadsQrcodeList.ETAPA.Visible (begin)
+        <th data-name="ETAPA" class="@(tadsQrcodeList.ETAPA.HeaderCellClass)"><div id="elh_TADS_QRCODE_ETAPA" class="TADS_QRCODE_ETAPA">@Html.Raw(tadsQrcodeList.RenderFieldHeader(tadsQrcodeList.ETAPA))</div></th>
+} @* tadsQrcodeList.ETAPA.Visible (end) *@
+@if (tadsQrcodeList.QRCODE.Visible) { // tadsQrcodeList.QRCODE.Visible (begin)
+        <th data-name="QRCODE" class="@(tadsQrcodeList.QRCODE.HeaderCellClass)"><div id="elh_TADS_QRCODE_QRCODE" class="TADS_QRCODE_QRCODE">@Html.Raw(tadsQrcodeList.RenderFieldHeader(tadsQrcodeList.QRCODE))</div></th>
+} @* tadsQrcodeList.QRCODE.Visible (end) *@
+@if (tadsQrcodeList.QRCODE2.Visible) { // tadsQrcodeList.QRCODE2.Visible (begin)
+        <th data-name="QRCODE2" class="@(tadsQrcodeList.QRCODE2.HeaderCellClass)"><div id="elh_TADS_QRCODE_QRCODE2" class="TADS_QRCODE_QRCODE2">@Html.Raw(tadsQrcodeList.RenderFieldHeader(tadsQrcodeList.QRCODE2))</div></th>
+} @* tadsQrcodeList.QRCODE2.Visible (end) *@
+@* Render list options (header, right) *@
+@tadsQrcodeList.ListOptions.RenderHeader("right")
+    </tr>
+</thead>
+<tbody data-page="@(tadsQrcodeList.PageNumber)">
+@{
+    await tadsQrcodeList.SetupGrid();
+    bool eof = tadsQrcodeList.Recordset == null; // DN
+}
+@while (tadsQrcodeList.RecordCount < tadsQrcodeList.StopRecord || SameString(tadsQrcodeList.RowIndex, "$rowindex$")) { // Begin While
+    if (!eof && !SameString(tadsQrcodeList.RowIndex, "$rowindex$") &&
+        (!tadsQrcodeList.IsGridAdd || tadsQrcodeList.CurrentMode == "copy") &&
+        (!((tadsQrcodeList.IsCopy || tadsQrcodeList.IsAdd) && tadsQrcodeList.RowIndex is int rowIndex && rowIndex == 0))) // DN
+        eof = !await tadsQrcodeList.Recordset.ReadAsync();
+    tadsQrcodeList.RecordCount++;
+    if (tadsQrcodeList.RecordCount >= tadsQrcodeList.StartRecord) {
+        await tadsQrcodeList.SetupRow();
+
+        // Skip 1) delete row / empty row for confirm page, 2) hidden row
+        if (tadsQrcodeList.RowAction != "delete" &&
+            tadsQrcodeList.RowAction != "insertdelete" &&
+            !(tadsQrcodeList.RowAction == "insert" && tadsQrcodeList.IsConfirm && tadsQrcodeList.EmptyRow()) &&
+            tadsQrcodeList.RowAction != "hide") {
+    <tr @Html.Raw(tadsQrcodeList.RowAttributes)>
+    @* Render list options (body, left) *@
+    @tadsQrcodeList.ListOptions.RenderBody("left", tadsQrcodeList.RowCount)
+    @if (tadsQrcodeList.ID.Visible) { // tadsQrcodeList.ID.Visible (begin)
+        <td data-name="ID" @Html.Raw(tadsQrcodeList.ID.CellAttributes)>
+@if (tadsQrcodeList.RowType == RowType.Add) { // Add (begin)
+    @* ID (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_ID" class="el_TADS_QRCODE_ID"></span>
+    <input type="hidden" data-table="TADS_QRCODE" data-field="x_ID" data-hidden="1" data-old name="o@(tadsQrcodeList.RowIndex)_ID" id="o@(tadsQrcodeList.RowIndex)_ID" value="@Html.Raw(HtmlEncode(tadsQrcodeList.ID.OldValue))">
+    @* ID (end) *@
+} @* Add (end) *@
+@if (tadsQrcodeList.RowType == RowType.Edit) { // Edit (begin)
+    @* ID (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_ID" class="el_TADS_QRCODE_ID">
+    <span @Html.Raw(tadsQrcodeList.ID.ViewAttributes)>
+    <input type="text" readonly class="form-control-plaintext" value="@Html.Raw(RemoveHtml(ConvertToString(tadsQrcodeList.ID.EditValue)))"></span>
+    <input type="hidden" data-table="TADS_QRCODE" data-field="x_ID" data-hidden="1" name="x@(tadsQrcodeList.RowIndex)_ID" id="x@(tadsQrcodeList.RowIndex)_ID" value="@Html.Raw(HtmlEncode(tadsQrcodeList.ID.CurrentValue))">
+    </span>
+    @* ID (end) *@
+} @* Edit (end) *@
+@if (tadsQrcodeList.RowType == RowType.View) { // View (begin)
+    @* ID (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_ID" class="el_TADS_QRCODE_ID">
+    <span @Html.Raw(tadsQrcodeList.ID.ViewAttributes)>
+    @Html.Raw(tadsQrcodeList.ID.GetViewValue())</span>
+    </span>
+    @* ID (end) *@
+} @* View (end) *@
+</td>
+    } else {
+        <input type="hidden" data-table="TADS_QRCODE" data-field="x_ID" data-hidden="1" name="x@(tadsQrcodeList.RowIndex)_ID" id="x@(tadsQrcodeList.RowIndex)_ID" value="@Html.Raw(HtmlEncode(tadsQrcodeList.ID.CurrentValue))">
+    } @* tadsQrcodeList.ID.Visible (end) *@
+    @if (tadsQrcodeList.COD.Visible) { // tadsQrcodeList.COD.Visible (begin)
+        <td data-name="COD" @Html.Raw(tadsQrcodeList.COD.CellAttributes)>
+@if (tadsQrcodeList.RowType == RowType.Add) { // Add (begin)
+    @* COD (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_COD" class="el_TADS_QRCODE_COD">
+    <input type="@(tadsQrcodeList.COD.InputTextType)" name="x@(tadsQrcodeList.RowIndex)_COD" id="x@(tadsQrcodeList.RowIndex)_COD" data-table="TADS_QRCODE" data-field="x_COD" value="@Html.Raw(tadsQrcodeList.COD.EditValue)" size="30" maxlength="50" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeList.COD.PlaceHolder))" data-format-pattern="@(tadsQrcodeList.COD.FormatPattern)"@Html.Raw(tadsQrcodeList.COD.EditAttributes)>
+    <div class="invalid-feedback">@Html.Raw(tadsQrcodeList.COD.GetErrorMessage())</div>
+    </span>
+    <input type="hidden" data-table="TADS_QRCODE" data-field="x_COD" data-hidden="1" data-old name="o@(tadsQrcodeList.RowIndex)_COD" id="o@(tadsQrcodeList.RowIndex)_COD" value="@Html.Raw(HtmlEncode(tadsQrcodeList.COD.OldValue))">
+    @* COD (end) *@
+} @* Add (end) *@
+@if (tadsQrcodeList.RowType == RowType.Edit) { // Edit (begin)
+    @* COD (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_COD" class="el_TADS_QRCODE_COD">
+    <input type="@(tadsQrcodeList.COD.InputTextType)" name="x@(tadsQrcodeList.RowIndex)_COD" id="x@(tadsQrcodeList.RowIndex)_COD" data-table="TADS_QRCODE" data-field="x_COD" value="@Html.Raw(tadsQrcodeList.COD.EditValue)" size="30" maxlength="50" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeList.COD.PlaceHolder))" data-format-pattern="@(tadsQrcodeList.COD.FormatPattern)"@Html.Raw(tadsQrcodeList.COD.EditAttributes)>
+    <div class="invalid-feedback">@Html.Raw(tadsQrcodeList.COD.GetErrorMessage())</div>
+    </span>
+    @* COD (end) *@
+} @* Edit (end) *@
+@if (tadsQrcodeList.RowType == RowType.View) { // View (begin)
+    @* COD (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_COD" class="el_TADS_QRCODE_COD">
+    <span @Html.Raw(tadsQrcodeList.COD.ViewAttributes)>
+    @Html.Raw(tadsQrcodeList.COD.GetViewValue())</span>
+    </span>
+    @* COD (end) *@
+} @* View (end) *@
+</td>
+    } @* tadsQrcodeList.COD.Visible (end) *@
+    @if (tadsQrcodeList.DES.Visible) { // tadsQrcodeList.DES.Visible (begin)
+        <td data-name="DES" @Html.Raw(tadsQrcodeList.DES.CellAttributes)>
+@if (tadsQrcodeList.RowType == RowType.Add) { // Add (begin)
+    @* DES (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_DES" class="el_TADS_QRCODE_DES">
+    <input type="@(tadsQrcodeList.DES.InputTextType)" name="x@(tadsQrcodeList.RowIndex)_DES" id="x@(tadsQrcodeList.RowIndex)_DES" data-table="TADS_QRCODE" data-field="x_DES" value="@Html.Raw(tadsQrcodeList.DES.EditValue)" size="30" maxlength="500" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeList.DES.PlaceHolder))" data-format-pattern="@(tadsQrcodeList.DES.FormatPattern)"@Html.Raw(tadsQrcodeList.DES.EditAttributes)>
+    <div class="invalid-feedback">@Html.Raw(tadsQrcodeList.DES.GetErrorMessage())</div>
+    </span>
+    <input type="hidden" data-table="TADS_QRCODE" data-field="x_DES" data-hidden="1" data-old name="o@(tadsQrcodeList.RowIndex)_DES" id="o@(tadsQrcodeList.RowIndex)_DES" value="@Html.Raw(HtmlEncode(tadsQrcodeList.DES.OldValue))">
+    @* DES (end) *@
+} @* Add (end) *@
+@if (tadsQrcodeList.RowType == RowType.Edit) { // Edit (begin)
+    @* DES (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_DES" class="el_TADS_QRCODE_DES">
+    <input type="@(tadsQrcodeList.DES.InputTextType)" name="x@(tadsQrcodeList.RowIndex)_DES" id="x@(tadsQrcodeList.RowIndex)_DES" data-table="TADS_QRCODE" data-field="x_DES" value="@Html.Raw(tadsQrcodeList.DES.EditValue)" size="30" maxlength="500" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeList.DES.PlaceHolder))" data-format-pattern="@(tadsQrcodeList.DES.FormatPattern)"@Html.Raw(tadsQrcodeList.DES.EditAttributes)>
+    <div class="invalid-feedback">@Html.Raw(tadsQrcodeList.DES.GetErrorMessage())</div>
+    </span>
+    @* DES (end) *@
+} @* Edit (end) *@
+@if (tadsQrcodeList.RowType == RowType.View) { // View (begin)
+    @* DES (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_DES" class="el_TADS_QRCODE_DES">
+    <span @Html.Raw(tadsQrcodeList.DES.ViewAttributes)>
+    @Html.Raw(tadsQrcodeList.DES.GetViewValue())</span>
+    </span>
+    @* DES (end) *@
+} @* View (end) *@
+</td>
+    } @* tadsQrcodeList.DES.Visible (end) *@
+    @if (tadsQrcodeList.CMD.Visible) { // tadsQrcodeList.CMD.Visible (begin)
+        <td data-name="CMD" @Html.Raw(tadsQrcodeList.CMD.CellAttributes)>
+@if (tadsQrcodeList.RowType == RowType.Add) { // Add (begin)
+    @* CMD (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_CMD" class="el_TADS_QRCODE_CMD">
+    <input type="@(tadsQrcodeList.CMD.InputTextType)" name="x@(tadsQrcodeList.RowIndex)_CMD" id="x@(tadsQrcodeList.RowIndex)_CMD" data-table="TADS_QRCODE" data-field="x_CMD" value="@Html.Raw(tadsQrcodeList.CMD.EditValue)" size="30" maxlength="100" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeList.CMD.PlaceHolder))" data-format-pattern="@(tadsQrcodeList.CMD.FormatPattern)"@Html.Raw(tadsQrcodeList.CMD.EditAttributes)>
+    <div class="invalid-feedback">@Html.Raw(tadsQrcodeList.CMD.GetErrorMessage())</div>
+    </span>
+    <input type="hidden" data-table="TADS_QRCODE" data-field="x_CMD" data-hidden="1" data-old name="o@(tadsQrcodeList.RowIndex)_CMD" id="o@(tadsQrcodeList.RowIndex)_CMD" value="@Html.Raw(HtmlEncode(tadsQrcodeList.CMD.OldValue))">
+    @* CMD (end) *@
+} @* Add (end) *@
+@if (tadsQrcodeList.RowType == RowType.Edit) { // Edit (begin)
+    @* CMD (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_CMD" class="el_TADS_QRCODE_CMD">
+    <input type="@(tadsQrcodeList.CMD.InputTextType)" name="x@(tadsQrcodeList.RowIndex)_CMD" id="x@(tadsQrcodeList.RowIndex)_CMD" data-table="TADS_QRCODE" data-field="x_CMD" value="@Html.Raw(tadsQrcodeList.CMD.EditValue)" size="30" maxlength="100" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeList.CMD.PlaceHolder))" data-format-pattern="@(tadsQrcodeList.CMD.FormatPattern)"@Html.Raw(tadsQrcodeList.CMD.EditAttributes)>
+    <div class="invalid-feedback">@Html.Raw(tadsQrcodeList.CMD.GetErrorMessage())</div>
+    </span>
+    @* CMD (end) *@
+} @* Edit (end) *@
+@if (tadsQrcodeList.RowType == RowType.View) { // View (begin)
+    @* CMD (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_CMD" class="el_TADS_QRCODE_CMD">
+    <span @Html.Raw(tadsQrcodeList.CMD.ViewAttributes)>
+    @Html.Raw(tadsQrcodeList.CMD.GetViewValue())</span>
+    </span>
+    @* CMD (end) *@
+} @* View (end) *@
+</td>
+    } @* tadsQrcodeList.CMD.Visible (end) *@
+    @if (tadsQrcodeList.FRM.Visible) { // tadsQrcodeList.FRM.Visible (begin)
+        <td data-name="FRM" @Html.Raw(tadsQrcodeList.FRM.CellAttributes)>
+@if (tadsQrcodeList.RowType == RowType.Add) { // Add (begin)
+    @* FRM (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_FRM" class="el_TADS_QRCODE_FRM">
+    <input type="@(tadsQrcodeList.FRM.InputTextType)" name="x@(tadsQrcodeList.RowIndex)_FRM" id="x@(tadsQrcodeList.RowIndex)_FRM" data-table="TADS_QRCODE" data-field="x_FRM" value="@Html.Raw(tadsQrcodeList.FRM.EditValue)" size="30" maxlength="50" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeList.FRM.PlaceHolder))" data-format-pattern="@(tadsQrcodeList.FRM.FormatPattern)"@Html.Raw(tadsQrcodeList.FRM.EditAttributes)>
+    <div class="invalid-feedback">@Html.Raw(tadsQrcodeList.FRM.GetErrorMessage())</div>
+    </span>
+    <input type="hidden" data-table="TADS_QRCODE" data-field="x_FRM" data-hidden="1" data-old name="o@(tadsQrcodeList.RowIndex)_FRM" id="o@(tadsQrcodeList.RowIndex)_FRM" value="@Html.Raw(HtmlEncode(tadsQrcodeList.FRM.OldValue))">
+    @* FRM (end) *@
+} @* Add (end) *@
+@if (tadsQrcodeList.RowType == RowType.Edit) { // Edit (begin)
+    @* FRM (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_FRM" class="el_TADS_QRCODE_FRM">
+    <input type="@(tadsQrcodeList.FRM.InputTextType)" name="x@(tadsQrcodeList.RowIndex)_FRM" id="x@(tadsQrcodeList.RowIndex)_FRM" data-table="TADS_QRCODE" data-field="x_FRM" value="@Html.Raw(tadsQrcodeList.FRM.EditValue)" size="30" maxlength="50" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeList.FRM.PlaceHolder))" data-format-pattern="@(tadsQrcodeList.FRM.FormatPattern)"@Html.Raw(tadsQrcodeList.FRM.EditAttributes)>
+    <div class="invalid-feedback">@Html.Raw(tadsQrcodeList.FRM.GetErrorMessage())</div>
+    </span>
+    @* FRM (end) *@
+} @* Edit (end) *@
+@if (tadsQrcodeList.RowType == RowType.View) { // View (begin)
+    @* FRM (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_FRM" class="el_TADS_QRCODE_FRM">
+    <span @Html.Raw(tadsQrcodeList.FRM.ViewAttributes)>
+    @Html.Raw(tadsQrcodeList.FRM.GetViewValue())</span>
+    </span>
+    @* FRM (end) *@
+} @* View (end) *@
+</td>
+    } @* tadsQrcodeList.FRM.Visible (end) *@
+    @if (tadsQrcodeList.LBL.Visible) { // tadsQrcodeList.LBL.Visible (begin)
+        <td data-name="LBL" @Html.Raw(tadsQrcodeList.LBL.CellAttributes)>
+@if (tadsQrcodeList.RowType == RowType.Add) { // Add (begin)
+    @* LBL (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_LBL" class="el_TADS_QRCODE_LBL">
+    <input type="@(tadsQrcodeList.LBL.InputTextType)" name="x@(tadsQrcodeList.RowIndex)_LBL" id="x@(tadsQrcodeList.RowIndex)_LBL" data-table="TADS_QRCODE" data-field="x_LBL" value="@Html.Raw(tadsQrcodeList.LBL.EditValue)" size="30" maxlength="150" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeList.LBL.PlaceHolder))" data-format-pattern="@(tadsQrcodeList.LBL.FormatPattern)"@Html.Raw(tadsQrcodeList.LBL.EditAttributes)>
+    <div class="invalid-feedback">@Html.Raw(tadsQrcodeList.LBL.GetErrorMessage())</div>
+    </span>
+    <input type="hidden" data-table="TADS_QRCODE" data-field="x_LBL" data-hidden="1" data-old name="o@(tadsQrcodeList.RowIndex)_LBL" id="o@(tadsQrcodeList.RowIndex)_LBL" value="@Html.Raw(HtmlEncode(tadsQrcodeList.LBL.OldValue))">
+    @* LBL (end) *@
+} @* Add (end) *@
+@if (tadsQrcodeList.RowType == RowType.Edit) { // Edit (begin)
+    @* LBL (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_LBL" class="el_TADS_QRCODE_LBL">
+    <input type="@(tadsQrcodeList.LBL.InputTextType)" name="x@(tadsQrcodeList.RowIndex)_LBL" id="x@(tadsQrcodeList.RowIndex)_LBL" data-table="TADS_QRCODE" data-field="x_LBL" value="@Html.Raw(tadsQrcodeList.LBL.EditValue)" size="30" maxlength="150" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeList.LBL.PlaceHolder))" data-format-pattern="@(tadsQrcodeList.LBL.FormatPattern)"@Html.Raw(tadsQrcodeList.LBL.EditAttributes)>
+    <div class="invalid-feedback">@Html.Raw(tadsQrcodeList.LBL.GetErrorMessage())</div>
+    </span>
+    @* LBL (end) *@
+} @* Edit (end) *@
+@if (tadsQrcodeList.RowType == RowType.View) { // View (begin)
+    @* LBL (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_LBL" class="el_TADS_QRCODE_LBL">
+    <span @Html.Raw(tadsQrcodeList.LBL.ViewAttributes)>
+    @Html.Raw(tadsQrcodeList.LBL.GetViewValue())</span>
+    </span>
+    @* LBL (end) *@
+} @* View (end) *@
+</td>
+    } @* tadsQrcodeList.LBL.Visible (end) *@
+    @if (tadsQrcodeList.COR.Visible) { // tadsQrcodeList.COR.Visible (begin)
+        <td data-name="COR" @Html.Raw(tadsQrcodeList.COR.CellAttributes)>
+@if (tadsQrcodeList.RowType == RowType.Add) { // Add (begin)
+    @* COR (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_COR" class="el_TADS_QRCODE_COR">
+    <input type="@(tadsQrcodeList.COR.InputTextType)" name="x@(tadsQrcodeList.RowIndex)_COR" id="x@(tadsQrcodeList.RowIndex)_COR" data-table="TADS_QRCODE" data-field="x_COR" value="@Html.Raw(tadsQrcodeList.COR.EditValue)" size="30" maxlength="150" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeList.COR.PlaceHolder))" data-format-pattern="@(tadsQrcodeList.COR.FormatPattern)"@Html.Raw(tadsQrcodeList.COR.EditAttributes)>
+    <div class="invalid-feedback">@Html.Raw(tadsQrcodeList.COR.GetErrorMessage())</div>
+    </span>
+    <input type="hidden" data-table="TADS_QRCODE" data-field="x_COR" data-hidden="1" data-old name="o@(tadsQrcodeList.RowIndex)_COR" id="o@(tadsQrcodeList.RowIndex)_COR" value="@Html.Raw(HtmlEncode(tadsQrcodeList.COR.OldValue))">
+    @* COR (end) *@
+} @* Add (end) *@
+@if (tadsQrcodeList.RowType == RowType.Edit) { // Edit (begin)
+    @* COR (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_COR" class="el_TADS_QRCODE_COR">
+    <input type="@(tadsQrcodeList.COR.InputTextType)" name="x@(tadsQrcodeList.RowIndex)_COR" id="x@(tadsQrcodeList.RowIndex)_COR" data-table="TADS_QRCODE" data-field="x_COR" value="@Html.Raw(tadsQrcodeList.COR.EditValue)" size="30" maxlength="150" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeList.COR.PlaceHolder))" data-format-pattern="@(tadsQrcodeList.COR.FormatPattern)"@Html.Raw(tadsQrcodeList.COR.EditAttributes)>
+    <div class="invalid-feedback">@Html.Raw(tadsQrcodeList.COR.GetErrorMessage())</div>
+    </span>
+    @* COR (end) *@
+} @* Edit (end) *@
+@if (tadsQrcodeList.RowType == RowType.View) { // View (begin)
+    @* COR (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_COR" class="el_TADS_QRCODE_COR">
+    <span @Html.Raw(tadsQrcodeList.COR.ViewAttributes)>
+    @Html.Raw(tadsQrcodeList.COR.GetViewValue())</span>
+    </span>
+    @* COR (end) *@
+} @* View (end) *@
+</td>
+    } @* tadsQrcodeList.COR.Visible (end) *@
+    @if (tadsQrcodeList.ETAPA.Visible) { // tadsQrcodeList.ETAPA.Visible (begin)
+        <td data-name="ETAPA" @Html.Raw(tadsQrcodeList.ETAPA.CellAttributes)>
+@if (tadsQrcodeList.RowType == RowType.Add) { // Add (begin)
+    @* ETAPA (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_ETAPA" class="el_TADS_QRCODE_ETAPA">
+    <input type="@(tadsQrcodeList.ETAPA.InputTextType)" name="x@(tadsQrcodeList.RowIndex)_ETAPA" id="x@(tadsQrcodeList.RowIndex)_ETAPA" data-table="TADS_QRCODE" data-field="x_ETAPA" value="@Html.Raw(tadsQrcodeList.ETAPA.EditValue)" size="30" maxlength="150" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeList.ETAPA.PlaceHolder))" data-format-pattern="@(tadsQrcodeList.ETAPA.FormatPattern)"@Html.Raw(tadsQrcodeList.ETAPA.EditAttributes)>
+    <div class="invalid-feedback">@Html.Raw(tadsQrcodeList.ETAPA.GetErrorMessage())</div>
+    </span>
+    <input type="hidden" data-table="TADS_QRCODE" data-field="x_ETAPA" data-hidden="1" data-old name="o@(tadsQrcodeList.RowIndex)_ETAPA" id="o@(tadsQrcodeList.RowIndex)_ETAPA" value="@Html.Raw(HtmlEncode(tadsQrcodeList.ETAPA.OldValue))">
+    @* ETAPA (end) *@
+} @* Add (end) *@
+@if (tadsQrcodeList.RowType == RowType.Edit) { // Edit (begin)
+    @* ETAPA (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_ETAPA" class="el_TADS_QRCODE_ETAPA">
+    <input type="@(tadsQrcodeList.ETAPA.InputTextType)" name="x@(tadsQrcodeList.RowIndex)_ETAPA" id="x@(tadsQrcodeList.RowIndex)_ETAPA" data-table="TADS_QRCODE" data-field="x_ETAPA" value="@Html.Raw(tadsQrcodeList.ETAPA.EditValue)" size="30" maxlength="150" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeList.ETAPA.PlaceHolder))" data-format-pattern="@(tadsQrcodeList.ETAPA.FormatPattern)"@Html.Raw(tadsQrcodeList.ETAPA.EditAttributes)>
+    <div class="invalid-feedback">@Html.Raw(tadsQrcodeList.ETAPA.GetErrorMessage())</div>
+    </span>
+    @* ETAPA (end) *@
+} @* Edit (end) *@
+@if (tadsQrcodeList.RowType == RowType.View) { // View (begin)
+    @* ETAPA (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_ETAPA" class="el_TADS_QRCODE_ETAPA">
+    <span @Html.Raw(tadsQrcodeList.ETAPA.ViewAttributes)>
+    @Html.Raw(tadsQrcodeList.ETAPA.GetViewValue())</span>
+    </span>
+    @* ETAPA (end) *@
+} @* View (end) *@
+</td>
+    } @* tadsQrcodeList.ETAPA.Visible (end) *@
+    @if (tadsQrcodeList.QRCODE.Visible) { // tadsQrcodeList.QRCODE.Visible (begin)
+        <td data-name="QRCODE" @Html.Raw(tadsQrcodeList.QRCODE.CellAttributes)>
+@if (tadsQrcodeList.RowType == RowType.Add) { // Add (begin)
+    @* QRCODE (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_QRCODE" class="el_TADS_QRCODE_QRCODE">
+    <div id="fd_x@(tadsQrcodeList.RowIndex)_QRCODE" class="fileinput-button ew-file-drop-zone">
+        <input
+            type="file"
+            id="x@(tadsQrcodeList.RowIndex)_QRCODE"
+            name="x@(tadsQrcodeList.RowIndex)_QRCODE"
+            class="form-control ew-file-input"
+            title="@(tadsQrcodeList.QRCODE.Title)"
+            lang="@(CurrentLanguageID)"
+            data-table="TADS_QRCODE"
+            data-field="x_QRCODE"
+            data-size="50"
+            data-accept-file-types="@(tadsQrcodeList.QRCODE.AcceptFileTypes)"
+            data-max-file-size="@(tadsQrcodeList.QRCODE.UploadMaxFileSize)"
+            data-max-number-of-files="null"
+            data-disable-image-crop="@(tadsQrcodeList.QRCODE.ImageCropper ? 0 : 1)"
+            @Html.Raw((tadsQrcodeList.QRCODE.ReadOnly || tadsQrcodeList.QRCODE.Disabled) ? " disabled" : "")
+            @Html.Raw(tadsQrcodeList.QRCODE.EditAttributes)
+        >
+        <div class="text-muted ew-file-text">@Html.Raw(Language.Phrase("ChooseFile"))</div>
+    </div>
+    <div class="invalid-feedback">@Html.Raw(tadsQrcodeList.QRCODE.GetErrorMessage())</div>
+    <input type="hidden" name="fn_x@(tadsQrcodeList.RowIndex)_QRCODE" id= "fn_x@(tadsQrcodeList.RowIndex)_QRCODE" value="@(tadsQrcodeList.QRCODE.Upload.FileName)">
+    <input type="hidden" name="fa_x@(tadsQrcodeList.RowIndex)_QRCODE" id= "fa_x@(tadsQrcodeList.RowIndex)_QRCODE" value="0">
+    <table id="ft_x@(tadsQrcodeList.RowIndex)_QRCODE" class="table table-sm float-start ew-upload-table"><tbody class="files"></tbody></table>
+    </span>
+    <input type="hidden" data-table="TADS_QRCODE" data-field="x_QRCODE" data-hidden="1" data-old name="o@(tadsQrcodeList.RowIndex)_QRCODE" id="o@(tadsQrcodeList.RowIndex)_QRCODE" value="@Html.Raw(HtmlEncode(tadsQrcodeList.QRCODE.OldValue))">
+    @* QRCODE (end) *@
+} @* Add (end) *@
+@if (tadsQrcodeList.RowType == RowType.Edit) { // Edit (begin)
+    @* QRCODE (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_QRCODE" class="el_TADS_QRCODE_QRCODE">
+    <div id="fd_x@(tadsQrcodeList.RowIndex)_QRCODE" class="fileinput-button ew-file-drop-zone">
+        <input
+            type="file"
+            id="x@(tadsQrcodeList.RowIndex)_QRCODE"
+            name="x@(tadsQrcodeList.RowIndex)_QRCODE"
+            class="form-control ew-file-input"
+            title="@(tadsQrcodeList.QRCODE.Title)"
+            lang="@(CurrentLanguageID)"
+            data-table="TADS_QRCODE"
+            data-field="x_QRCODE"
+            data-size="50"
+            data-accept-file-types="@(tadsQrcodeList.QRCODE.AcceptFileTypes)"
+            data-max-file-size="@(tadsQrcodeList.QRCODE.UploadMaxFileSize)"
+            data-max-number-of-files="null"
+            data-disable-image-crop="@(tadsQrcodeList.QRCODE.ImageCropper ? 0 : 1)"
+            @Html.Raw((tadsQrcodeList.QRCODE.ReadOnly || tadsQrcodeList.QRCODE.Disabled) ? " disabled" : "")
+            @Html.Raw(tadsQrcodeList.QRCODE.EditAttributes)
+        >
+        <div class="text-muted ew-file-text">@Html.Raw(Language.Phrase("ChooseFile"))</div>
+    </div>
+    <div class="invalid-feedback">@Html.Raw(tadsQrcodeList.QRCODE.GetErrorMessage())</div>
+    <input type="hidden" name="fn_x@(tadsQrcodeList.RowIndex)_QRCODE" id= "fn_x@(tadsQrcodeList.RowIndex)_QRCODE" value="@(tadsQrcodeList.QRCODE.Upload.FileName)">
+    <input type="hidden" name="fa_x@(tadsQrcodeList.RowIndex)_QRCODE" id= "fa_x@(tadsQrcodeList.RowIndex)_QRCODE" value="@(Post("fa_x" + tadsQrcodeList.RowIndex + "_QRCODE") == "0" ? "0" : "1")">
+    <table id="ft_x@(tadsQrcodeList.RowIndex)_QRCODE" class="table table-sm float-start ew-upload-table"><tbody class="files"></tbody></table>
+    </span>
+    @* QRCODE (end) *@
+} @* Edit (end) *@
+@if (tadsQrcodeList.RowType == RowType.View) { // View (begin)
+    @* QRCODE (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_QRCODE" class="el_TADS_QRCODE_QRCODE">
+    <span @Html.Raw(tadsQrcodeList.QRCODE.ViewAttributes)>
+    @Html.Raw(await GetFileViewTag((DbField)tadsQrcodeList.QRCODE, ConvertToString(tadsQrcodeList.QRCODE.GetViewValue()), false))
+    </span>
+    </span>
+    @* QRCODE (end) *@
+} @* View (end) *@
+</td>
+    } @* tadsQrcodeList.QRCODE.Visible (end) *@
+    @if (tadsQrcodeList.QRCODE2.Visible) { // tadsQrcodeList.QRCODE2.Visible (begin)
+        <td data-name="QRCODE2" @Html.Raw(tadsQrcodeList.QRCODE2.CellAttributes)>
+@if (tadsQrcodeList.RowType == RowType.Add) { // Add (begin)
+    @* QRCODE2 (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_QRCODE2" class="el_TADS_QRCODE_QRCODE2">
+    <textarea data-table="TADS_QRCODE" data-field="x_QRCODE2" name="x@(tadsQrcodeList.RowIndex)_QRCODE2" id="x@(tadsQrcodeList.RowIndex)_QRCODE2" cols="35" rows="4" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeList.QRCODE2.PlaceHolder))"@Html.Raw(tadsQrcodeList.QRCODE2.EditAttributes)>@(tadsQrcodeList.QRCODE2.EditValue)</textarea>
+    <div class="invalid-feedback">@Html.Raw(tadsQrcodeList.QRCODE2.GetErrorMessage())</div>
+    </span>
+    <input type="hidden" data-table="TADS_QRCODE" data-field="x_QRCODE2" data-hidden="1" data-old name="o@(tadsQrcodeList.RowIndex)_QRCODE2" id="o@(tadsQrcodeList.RowIndex)_QRCODE2" value="@Html.Raw(HtmlEncode(tadsQrcodeList.QRCODE2.OldValue))">
+    @* QRCODE2 (end) *@
+} @* Add (end) *@
+@if (tadsQrcodeList.RowType == RowType.Edit) { // Edit (begin)
+    @* QRCODE2 (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_QRCODE2" class="el_TADS_QRCODE_QRCODE2">
+    <textarea data-table="TADS_QRCODE" data-field="x_QRCODE2" name="x@(tadsQrcodeList.RowIndex)_QRCODE2" id="x@(tadsQrcodeList.RowIndex)_QRCODE2" cols="35" rows="4" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeList.QRCODE2.PlaceHolder))"@Html.Raw(tadsQrcodeList.QRCODE2.EditAttributes)>@(tadsQrcodeList.QRCODE2.EditValue)</textarea>
+    <div class="invalid-feedback">@Html.Raw(tadsQrcodeList.QRCODE2.GetErrorMessage())</div>
+    </span>
+    @* QRCODE2 (end) *@
+} @* Edit (end) *@
+@if (tadsQrcodeList.RowType == RowType.View) { // View (begin)
+    @* QRCODE2 (begin) *@
+    <span id="el@(tadsQrcodeList.RowIndex == "$rowindex$" ? "$rowindex$" : tadsQrcodeList.RowCount)_TADS_QRCODE_QRCODE2" class="el_TADS_QRCODE_QRCODE2">
+    <span @Html.Raw(tadsQrcodeList.QRCODE2.ViewAttributes)>
+    @Html.Raw(tadsQrcodeList.QRCODE2.GetViewValue())</span>
+    </span>
+    @* QRCODE2 (end) *@
+} @* View (end) *@
+</td>
+    } @* tadsQrcodeList.QRCODE2.Visible (end) *@
+    @* Render list options (body, right) *@
+    @tadsQrcodeList.ListOptions.RenderBody("right", tadsQrcodeList.RowCount)
+    </tr>
+if (tadsQrcodeList.RowType == RowType.Add || tadsQrcodeList.RowType == RowType.Edit) {
+<script>
+loadjs.ready(["@(tadsQrcodeList.FormName)","load"], () => @(tadsQrcodeList.FormName).updateLists(@(tadsQrcodeList.RowIndex)@(tadsQrcodeList.IsAdd || tadsQrcodeList.IsEdit || tadsQrcodeList.IsCopy || SameString(tadsQrcodeList.RowIndex, "$rowindex$") ? ", true" : "")));
+</script>
+}
+    } @* End delete row checking *@
+    } @* End if *@
+
+    // Reset for template row
+    if (SameString(tadsQrcodeList.RowIndex, "$rowindex$"))
+        tadsQrcodeList.RowIndex = 0;
+
+    // Reset inline add/copy row
+    if ((tadsQrcodeList.IsCopy || tadsQrcodeList.IsAdd) && tadsQrcodeList.RowIndex is int rowIndex2 && rowIndex2 == 0)
+        tadsQrcodeList.RowIndex = 1;
+} @* End While *@
+</tbody>
+</table><!-- /.ew-table -->
+} @* End If TotalRecords > 0 *@
+@if (tadsQrcodeList.IsAdd || tadsQrcodeList.IsCopy) {
+<input type="hidden" name="@(tadsQrcodeList.FormKeyCountName)" id="@(tadsQrcodeList.FormKeyCountName)" value="@(tadsQrcodeList.KeyCount)">
+<input type="hidden" name="@(tadsQrcodeList.OldKeyName)" value="@Html.Raw(tadsQrcodeList.OldKey)">
+}
+@if (tadsQrcodeList.IsGridAdd) {
+<input type="hidden" name="action" id="action" value="gridinsert">
+<input type="hidden" name="@(tadsQrcodeList.FormKeyCountName)" id="@(tadsQrcodeList.FormKeyCountName)" value="@(tadsQrcodeList.KeyCount)">
+@Html.Raw(tadsQrcodeList.MultiSelectKey)
+}
+@if (tadsQrcodeList.IsEdit) {
+<input type="hidden" name="@(tadsQrcodeList.FormKeyCountName)" id="@(tadsQrcodeList.FormKeyCountName)" value="@(tadsQrcodeList.KeyCount)">
+}
+@if (tadsQrcodeList.IsGridEdit || tadsQrcodeList.IsMultiEdit) {
+if (tadsQrcodeList.IsGridEdit) {
+<input type="hidden" name="action" id="action" value="gridupdate">
+} else if (tadsQrcodeList.IsMultiEdit) {
+<input type="hidden" name="action" id="action" value="multiupdate">
+}
+<input type="hidden" name="@(tadsQrcodeList.FormKeyCountName)" id="@(tadsQrcodeList.FormKeyCountName)" value="@(tadsQrcodeList.KeyCount)">
+@Html.Raw(tadsQrcodeList.MultiSelectKey)
+}
+</div><!-- /.ew-grid-middle-panel -->
+@if (Empty(tadsQrcodeList.CurrentAction) && !tadsQrcodeList.UseAjaxActions) {
+<input type="hidden" name="action" id="action" value="">
+}
+</form><!-- /.ew-list-form -->
+@{ tadsQrcodeList.CloseRecordset(); }
+@if (!tadsQrcodeList.IsExport()) {
+<div class="card-footer ew-grid-lower-panel">
+@if (!tadsQrcodeList.IsGridAdd && !(tadsQrcodeList.IsGridEdit && tadsQrcodeList.ModalGridEdit) && !tadsQrcodeList.IsMultiEdit) {
+@Html.Raw(tadsQrcodeList.Pager.Render())
+}
+<div class="ew-list-other-options">
+@tadsQrcodeList.OtherOptions.RenderBody("bottom")
+</div>
+</div>
+}
+</div><!-- /.ew-grid -->
+} else { // Show other options
+<div class="ew-list-other-options">
+@tadsQrcodeList.OtherOptions.ForEach(opt => opt.ButtonClass = "").RenderBody()
+</div>
+}
+</div>
+</main>
+@tadsQrcodeList.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+@if (!tadsQrcodeList.IsExport()) {
+<script>
+// Field event handlers
+loadjs.ready("head", function() {
+    ew.addEventHandlers("TADS_QRCODE");
+});
+</script>
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>
+}

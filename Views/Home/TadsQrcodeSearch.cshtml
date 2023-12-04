@@ -1,0 +1,324 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (tadsQrcodeSearch.ActionResult is EmptyResult) { // Terminate page
+        return;
+    }
+
+    // Layout
+    if (!tadsQrcodeSearch.UseLayout) // UseLayout = false // DN
+        Layout = "";
+    else
+        Layout = "_Layout";
+
+    // Local variables (Temp data)
+    #pragma warning disable 168
+    string? sqlWrk, filterWrk, whereWrk, curVal, dispVal;
+    List<Dictionary<string, object>>? rswrk;
+    string[]? arWrk;
+    List<object?>? listWrk;
+    object? guidWrk;
+    Func<string>? lookupFilter;
+    #pragma warning restore 168
+}
+<script>
+var currentTable = @Html.Raw(ConvertToJson(tadsQrcodeSearch.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { TADS_QRCODE: currentTable } });
+var currentPageID = ew.PAGE_ID = "search";
+var currentForm;
+var fTADS_QRCODEsearch, currentSearchForm, currentAdvancedSearchForm;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery,
+        fields = currentTable.fields;
+
+    // Form object for search
+    let form = new ew.FormBuilder()
+        .setId("fTADS_QRCODEsearch")
+        .setPageId("search")
+@if (tadsQrcodeSearch.IsModal && tadsQrcodeSearch.UseAjaxActions) {
+        <text>.setSubmitWithFetch(true)</text>
+}
+
+        // Add fields
+        .setFields([
+
+            ["ID", [ew.Validators.integer], fields.ID.isInvalid],
+            ["COD", [], fields.COD.isInvalid],
+            ["DES", [], fields.DES.isInvalid],
+            ["CMD", [], fields.CMD.isInvalid],
+            ["FRM", [], fields.FRM.isInvalid],
+            ["LBL", [], fields.LBL.isInvalid],
+            ["COR", [], fields.COR.isInvalid],
+            ["ETAPA", [], fields.ETAPA.isInvalid],
+            ["QRCODE2", [], fields.QRCODE2.isInvalid]
+        ])
+        // Validate form
+        .setValidate(
+            async function () {
+                if (!this.validateRequired)
+                    return true; // Ignore validation
+                let fobj = this.getForm();
+
+                // Validate fields
+                if (!this.validateFields())
+                    return false;
+
+                // Call Form_CustomValidate event
+                if (!(await this.customValidate?.(fobj) ?? true)) {
+                    this.focus();
+                    return false;
+                }
+                return true;
+            }
+        )
+
+        // Form_CustomValidate
+        .setCustomValidate(
+            function(fobj) { // DO NOT CHANGE THIS LINE!
+                    // Your custom validation code here, return false if invalid.
+                    return true;
+                }
+        )
+
+        // Use JavaScript validation or not
+        .setValidateRequired(ew.CLIENT_VALIDATE)
+
+        // Dynamic selection lists
+        .setLists({
+        })
+        .build();
+    window[form.id] = form;
+@if (tadsQrcodeSearch.IsModal) {
+    <text>currentAdvancedSearchForm = form;</text>
+} else {
+    <text>currentForm = form;</text>
+}
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+@tadsQrcodeSearch.ShowPageHeader()
+@tadsQrcodeSearch.ShowMessages()
+<form name="fTADS_QRCODEsearch" id="fTADS_QRCODEsearch" class="@(tadsQrcodeSearch.FormClassName)" action="@AppPath(CurrentPageName())" method="post" novalidate autocomplete="off">
+@if (CurrentPage.CheckToken) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="search">
+@if (tadsQrcodeSearch.IsModal) {
+<input type="hidden" name="modal" value="1">
+}
+<div class="ew-search-div"><!-- page* -->
+@if (tadsQrcodeSearch.ID.Visible) { // tadsQrcodeSearch.ID.Visible (begin)
+    <div id="r_ID" class="row" @Html.Raw(tadsQrcodeSearch.ID.RowAttributes)>
+        <label for="x_ID" class="@(tadsQrcodeSearch.LeftColumnClass)"><span id="elh_TADS_QRCODE_ID">@Html.Raw(tadsQrcodeSearch.ID.Caption)</span>
+        <span class="ew-search-operator">
+@Html.Raw(Language.Phrase("="))
+<input type="hidden" name="z_ID" id="z_ID" value="=">
+</span>
+        </label>
+        <div class="@(tadsQrcodeSearch.RightColumnClass)">
+            <div @Html.Raw(tadsQrcodeSearch.ID.CellAttributes)>
+                <div class="d-flex align-items-start">
+                <span id="el_TADS_QRCODE_ID" class="ew-search-field ew-search-field-single">
+<input type="@(tadsQrcodeSearch.ID.InputTextType)" name="x_ID" id="x_ID" data-table="TADS_QRCODE" data-field="x_ID" value="@Html.Raw(tadsQrcodeSearch.ID.EditValue)" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeSearch.ID.PlaceHolder))" data-format-pattern="@(tadsQrcodeSearch.ID.FormatPattern)"@Html.Raw(tadsQrcodeSearch.ID.EditAttributes)>
+<div class="invalid-feedback">@Html.Raw(tadsQrcodeSearch.ID.GetErrorMessage(false))</div>
+</span>
+                </div>
+            </div>
+        </div>
+    </div>
+} @* tadsQrcodeSearch.ID.Visible (end) *@
+@if (tadsQrcodeSearch.COD.Visible) { // tadsQrcodeSearch.COD.Visible (begin)
+    <div id="r_COD" class="row" @Html.Raw(tadsQrcodeSearch.COD.RowAttributes)>
+        <label for="x_COD" class="@(tadsQrcodeSearch.LeftColumnClass)"><span id="elh_TADS_QRCODE_COD">@Html.Raw(tadsQrcodeSearch.COD.Caption)</span>
+        <span class="ew-search-operator">
+@Html.Raw(Language.Phrase("LIKE"))
+<input type="hidden" name="z_COD" id="z_COD" value="LIKE">
+</span>
+        </label>
+        <div class="@(tadsQrcodeSearch.RightColumnClass)">
+            <div @Html.Raw(tadsQrcodeSearch.COD.CellAttributes)>
+                <div class="d-flex align-items-start">
+                <span id="el_TADS_QRCODE_COD" class="ew-search-field ew-search-field-single">
+<input type="@(tadsQrcodeSearch.COD.InputTextType)" name="x_COD" id="x_COD" data-table="TADS_QRCODE" data-field="x_COD" value="@Html.Raw(tadsQrcodeSearch.COD.EditValue)" size="30" maxlength="50" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeSearch.COD.PlaceHolder))" data-format-pattern="@(tadsQrcodeSearch.COD.FormatPattern)"@Html.Raw(tadsQrcodeSearch.COD.EditAttributes)>
+<div class="invalid-feedback">@Html.Raw(tadsQrcodeSearch.COD.GetErrorMessage(false))</div>
+</span>
+                </div>
+            </div>
+        </div>
+    </div>
+} @* tadsQrcodeSearch.COD.Visible (end) *@
+@if (tadsQrcodeSearch.DES.Visible) { // tadsQrcodeSearch.DES.Visible (begin)
+    <div id="r_DES" class="row" @Html.Raw(tadsQrcodeSearch.DES.RowAttributes)>
+        <label for="x_DES" class="@(tadsQrcodeSearch.LeftColumnClass)"><span id="elh_TADS_QRCODE_DES">@Html.Raw(tadsQrcodeSearch.DES.Caption)</span>
+        <span class="ew-search-operator">
+@Html.Raw(Language.Phrase("LIKE"))
+<input type="hidden" name="z_DES" id="z_DES" value="LIKE">
+</span>
+        </label>
+        <div class="@(tadsQrcodeSearch.RightColumnClass)">
+            <div @Html.Raw(tadsQrcodeSearch.DES.CellAttributes)>
+                <div class="d-flex align-items-start">
+                <span id="el_TADS_QRCODE_DES" class="ew-search-field ew-search-field-single">
+<input type="@(tadsQrcodeSearch.DES.InputTextType)" name="x_DES" id="x_DES" data-table="TADS_QRCODE" data-field="x_DES" value="@Html.Raw(tadsQrcodeSearch.DES.EditValue)" size="30" maxlength="500" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeSearch.DES.PlaceHolder))" data-format-pattern="@(tadsQrcodeSearch.DES.FormatPattern)"@Html.Raw(tadsQrcodeSearch.DES.EditAttributes)>
+<div class="invalid-feedback">@Html.Raw(tadsQrcodeSearch.DES.GetErrorMessage(false))</div>
+</span>
+                </div>
+            </div>
+        </div>
+    </div>
+} @* tadsQrcodeSearch.DES.Visible (end) *@
+@if (tadsQrcodeSearch.CMD.Visible) { // tadsQrcodeSearch.CMD.Visible (begin)
+    <div id="r_CMD" class="row" @Html.Raw(tadsQrcodeSearch.CMD.RowAttributes)>
+        <label for="x_CMD" class="@(tadsQrcodeSearch.LeftColumnClass)"><span id="elh_TADS_QRCODE_CMD">@Html.Raw(tadsQrcodeSearch.CMD.Caption)</span>
+        <span class="ew-search-operator">
+@Html.Raw(Language.Phrase("LIKE"))
+<input type="hidden" name="z_CMD" id="z_CMD" value="LIKE">
+</span>
+        </label>
+        <div class="@(tadsQrcodeSearch.RightColumnClass)">
+            <div @Html.Raw(tadsQrcodeSearch.CMD.CellAttributes)>
+                <div class="d-flex align-items-start">
+                <span id="el_TADS_QRCODE_CMD" class="ew-search-field ew-search-field-single">
+<input type="@(tadsQrcodeSearch.CMD.InputTextType)" name="x_CMD" id="x_CMD" data-table="TADS_QRCODE" data-field="x_CMD" value="@Html.Raw(tadsQrcodeSearch.CMD.EditValue)" size="30" maxlength="100" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeSearch.CMD.PlaceHolder))" data-format-pattern="@(tadsQrcodeSearch.CMD.FormatPattern)"@Html.Raw(tadsQrcodeSearch.CMD.EditAttributes)>
+<div class="invalid-feedback">@Html.Raw(tadsQrcodeSearch.CMD.GetErrorMessage(false))</div>
+</span>
+                </div>
+            </div>
+        </div>
+    </div>
+} @* tadsQrcodeSearch.CMD.Visible (end) *@
+@if (tadsQrcodeSearch.FRM.Visible) { // tadsQrcodeSearch.FRM.Visible (begin)
+    <div id="r_FRM" class="row" @Html.Raw(tadsQrcodeSearch.FRM.RowAttributes)>
+        <label for="x_FRM" class="@(tadsQrcodeSearch.LeftColumnClass)"><span id="elh_TADS_QRCODE_FRM">@Html.Raw(tadsQrcodeSearch.FRM.Caption)</span>
+        <span class="ew-search-operator">
+@Html.Raw(Language.Phrase("LIKE"))
+<input type="hidden" name="z_FRM" id="z_FRM" value="LIKE">
+</span>
+        </label>
+        <div class="@(tadsQrcodeSearch.RightColumnClass)">
+            <div @Html.Raw(tadsQrcodeSearch.FRM.CellAttributes)>
+                <div class="d-flex align-items-start">
+                <span id="el_TADS_QRCODE_FRM" class="ew-search-field ew-search-field-single">
+<input type="@(tadsQrcodeSearch.FRM.InputTextType)" name="x_FRM" id="x_FRM" data-table="TADS_QRCODE" data-field="x_FRM" value="@Html.Raw(tadsQrcodeSearch.FRM.EditValue)" size="30" maxlength="50" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeSearch.FRM.PlaceHolder))" data-format-pattern="@(tadsQrcodeSearch.FRM.FormatPattern)"@Html.Raw(tadsQrcodeSearch.FRM.EditAttributes)>
+<div class="invalid-feedback">@Html.Raw(tadsQrcodeSearch.FRM.GetErrorMessage(false))</div>
+</span>
+                </div>
+            </div>
+        </div>
+    </div>
+} @* tadsQrcodeSearch.FRM.Visible (end) *@
+@if (tadsQrcodeSearch.LBL.Visible) { // tadsQrcodeSearch.LBL.Visible (begin)
+    <div id="r_LBL" class="row" @Html.Raw(tadsQrcodeSearch.LBL.RowAttributes)>
+        <label for="x_LBL" class="@(tadsQrcodeSearch.LeftColumnClass)"><span id="elh_TADS_QRCODE_LBL">@Html.Raw(tadsQrcodeSearch.LBL.Caption)</span>
+        <span class="ew-search-operator">
+@Html.Raw(Language.Phrase("LIKE"))
+<input type="hidden" name="z_LBL" id="z_LBL" value="LIKE">
+</span>
+        </label>
+        <div class="@(tadsQrcodeSearch.RightColumnClass)">
+            <div @Html.Raw(tadsQrcodeSearch.LBL.CellAttributes)>
+                <div class="d-flex align-items-start">
+                <span id="el_TADS_QRCODE_LBL" class="ew-search-field ew-search-field-single">
+<input type="@(tadsQrcodeSearch.LBL.InputTextType)" name="x_LBL" id="x_LBL" data-table="TADS_QRCODE" data-field="x_LBL" value="@Html.Raw(tadsQrcodeSearch.LBL.EditValue)" size="30" maxlength="150" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeSearch.LBL.PlaceHolder))" data-format-pattern="@(tadsQrcodeSearch.LBL.FormatPattern)"@Html.Raw(tadsQrcodeSearch.LBL.EditAttributes)>
+<div class="invalid-feedback">@Html.Raw(tadsQrcodeSearch.LBL.GetErrorMessage(false))</div>
+</span>
+                </div>
+            </div>
+        </div>
+    </div>
+} @* tadsQrcodeSearch.LBL.Visible (end) *@
+@if (tadsQrcodeSearch.COR.Visible) { // tadsQrcodeSearch.COR.Visible (begin)
+    <div id="r_COR" class="row" @Html.Raw(tadsQrcodeSearch.COR.RowAttributes)>
+        <label for="x_COR" class="@(tadsQrcodeSearch.LeftColumnClass)"><span id="elh_TADS_QRCODE_COR">@Html.Raw(tadsQrcodeSearch.COR.Caption)</span>
+        <span class="ew-search-operator">
+@Html.Raw(Language.Phrase("LIKE"))
+<input type="hidden" name="z_COR" id="z_COR" value="LIKE">
+</span>
+        </label>
+        <div class="@(tadsQrcodeSearch.RightColumnClass)">
+            <div @Html.Raw(tadsQrcodeSearch.COR.CellAttributes)>
+                <div class="d-flex align-items-start">
+                <span id="el_TADS_QRCODE_COR" class="ew-search-field ew-search-field-single">
+<input type="@(tadsQrcodeSearch.COR.InputTextType)" name="x_COR" id="x_COR" data-table="TADS_QRCODE" data-field="x_COR" value="@Html.Raw(tadsQrcodeSearch.COR.EditValue)" size="30" maxlength="150" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeSearch.COR.PlaceHolder))" data-format-pattern="@(tadsQrcodeSearch.COR.FormatPattern)"@Html.Raw(tadsQrcodeSearch.COR.EditAttributes)>
+<div class="invalid-feedback">@Html.Raw(tadsQrcodeSearch.COR.GetErrorMessage(false))</div>
+</span>
+                </div>
+            </div>
+        </div>
+    </div>
+} @* tadsQrcodeSearch.COR.Visible (end) *@
+@if (tadsQrcodeSearch.ETAPA.Visible) { // tadsQrcodeSearch.ETAPA.Visible (begin)
+    <div id="r_ETAPA" class="row" @Html.Raw(tadsQrcodeSearch.ETAPA.RowAttributes)>
+        <label for="x_ETAPA" class="@(tadsQrcodeSearch.LeftColumnClass)"><span id="elh_TADS_QRCODE_ETAPA">@Html.Raw(tadsQrcodeSearch.ETAPA.Caption)</span>
+        <span class="ew-search-operator">
+@Html.Raw(Language.Phrase("LIKE"))
+<input type="hidden" name="z_ETAPA" id="z_ETAPA" value="LIKE">
+</span>
+        </label>
+        <div class="@(tadsQrcodeSearch.RightColumnClass)">
+            <div @Html.Raw(tadsQrcodeSearch.ETAPA.CellAttributes)>
+                <div class="d-flex align-items-start">
+                <span id="el_TADS_QRCODE_ETAPA" class="ew-search-field ew-search-field-single">
+<input type="@(tadsQrcodeSearch.ETAPA.InputTextType)" name="x_ETAPA" id="x_ETAPA" data-table="TADS_QRCODE" data-field="x_ETAPA" value="@Html.Raw(tadsQrcodeSearch.ETAPA.EditValue)" size="30" maxlength="150" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeSearch.ETAPA.PlaceHolder))" data-format-pattern="@(tadsQrcodeSearch.ETAPA.FormatPattern)"@Html.Raw(tadsQrcodeSearch.ETAPA.EditAttributes)>
+<div class="invalid-feedback">@Html.Raw(tadsQrcodeSearch.ETAPA.GetErrorMessage(false))</div>
+</span>
+                </div>
+            </div>
+        </div>
+    </div>
+} @* tadsQrcodeSearch.ETAPA.Visible (end) *@
+@if (tadsQrcodeSearch.QRCODE2.Visible) { // tadsQrcodeSearch.QRCODE2.Visible (begin)
+    <div id="r_QRCODE2" class="row" @Html.Raw(tadsQrcodeSearch.QRCODE2.RowAttributes)>
+        <label for="x_QRCODE2" class="@(tadsQrcodeSearch.LeftColumnClass)"><span id="elh_TADS_QRCODE_QRCODE2">@Html.Raw(tadsQrcodeSearch.QRCODE2.Caption)</span>
+        <span class="ew-search-operator">
+@Html.Raw(Language.Phrase("LIKE"))
+<input type="hidden" name="z_QRCODE2" id="z_QRCODE2" value="LIKE">
+</span>
+        </label>
+        <div class="@(tadsQrcodeSearch.RightColumnClass)">
+            <div @Html.Raw(tadsQrcodeSearch.QRCODE2.CellAttributes)>
+                <div class="d-flex align-items-start">
+                <span id="el_TADS_QRCODE_QRCODE2" class="ew-search-field ew-search-field-single">
+<input type="@(tadsQrcodeSearch.QRCODE2.InputTextType)" name="x_QRCODE2" id="x_QRCODE2" data-table="TADS_QRCODE" data-field="x_QRCODE2" value="@Html.Raw(tadsQrcodeSearch.QRCODE2.EditValue)" size="35" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeSearch.QRCODE2.PlaceHolder))" data-format-pattern="@(tadsQrcodeSearch.QRCODE2.FormatPattern)"@Html.Raw(tadsQrcodeSearch.QRCODE2.EditAttributes)>
+<div class="invalid-feedback">@Html.Raw(tadsQrcodeSearch.QRCODE2.GetErrorMessage(false))</div>
+</span>
+                </div>
+            </div>
+        </div>
+    </div>
+} @* tadsQrcodeSearch.QRCODE2.Visible (end) *@
+</div><!-- /page* -->
+@Html.Raw(tadsQrcodeSearch.IsModal ? Html.Raw("<template class=\"ew-modal-buttons\">") : Html.Raw("<div class=\"row ew-buttons\">"))<!-- buttons .row -->
+    <div class="@(tadsQrcodeSearch.OffsetColumnClass)"><!-- buttons offset -->
+        <button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit" form="fTADS_QRCODEsearch">@Html.Raw(Language.Phrase("Search"))</button>
+@if (tadsQrcodeSearch.IsModal) {
+        <button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" form="fTADS_QRCODEsearch">@Html.Raw(Language.Phrase("Cancel"))</button>
+} else {
+        <button class="btn btn-default ew-btn" name="btn-reset" id="btn-reset" type="button" form="fTADS_QRCODEsearch" data-ew-action="reload">@Html.Raw(Language.Phrase("Reset"))</button>
+}
+    </div><!-- /buttons offset -->
+@Html.Raw(tadsQrcodeSearch.IsModal ? Html.Raw("</template>") : Html.Raw("</div>"))<!-- /buttons .row -->
+</form>
+@tadsQrcodeSearch.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+<script>
+// Field event handlers
+loadjs.ready("head", function() {
+    ew.addEventHandlers("TADS_QRCODE");
+});
+</script>
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>

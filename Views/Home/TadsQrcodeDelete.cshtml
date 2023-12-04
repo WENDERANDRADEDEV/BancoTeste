@@ -1,0 +1,206 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (tadsQrcodeDelete.ActionResult is EmptyResult) { // Terminate page
+        return;
+    }
+
+    // Layout
+    if (!tadsQrcodeDelete.UseLayout) // UseLayout = false // DN
+        Layout = "";
+    else
+        Layout = "_Layout";
+
+    // Local variables (Temp data)
+    #pragma warning disable 168
+    string? sqlWrk, filterWrk, whereWrk, curVal, dispVal;
+    List<Dictionary<string, object>>? rswrk;
+    string[]? arWrk;
+    List<object?>? listWrk;
+    object? guidWrk;
+    Func<string>? lookupFilter;
+    #pragma warning restore 168
+}
+<script>
+var currentTable = @Html.Raw(ConvertToJson(tadsQrcodeDelete.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { TADS_QRCODE: currentTable } });
+var currentPageID = ew.PAGE_ID = "delete";
+var currentForm;
+var fTADS_QRCODEdelete;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("fTADS_QRCODEdelete")
+        .setPageId("delete")
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+@tadsQrcodeDelete.ShowPageHeader()
+@tadsQrcodeDelete.ShowMessages()
+<form name="fTADS_QRCODEdelete" id="fTADS_QRCODEdelete" class="ew-form ew-delete-form" action="@AppPath(CurrentPageName())" method="post" novalidate autocomplete="off">
+@if (CurrentPage.CheckToken) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="delete">
+@foreach (string key in tadsQrcodeDelete.RecordKeys) {
+<input type="hidden" name="key_m[]" value="@key">
+}
+<div class="card ew-card ew-grid @(tadsQrcodeDelete.TableGridClass)">
+<div class="card-body ew-grid-middle-panel @(tadsQrcodeDelete.TableContainerClass)" style="@(tadsQrcodeDelete.TableContainerStyle)">
+<table class="@(tadsQrcodeDelete.TableClass)">
+    <thead>
+    <tr class="ew-table-header">
+@if (tadsQrcodeDelete.ID.Visible) { // tadsQrcodeDelete.ID.Visible (begin)
+        <th class="@Html.Raw(tadsQrcodeDelete.ID.HeaderCellClass)"><span id="elh_TADS_QRCODE_ID" class="TADS_QRCODE_ID">@Html.Raw(tadsQrcodeDelete.ID.Caption)</span></th>
+} @* tadsQrcodeDelete.ID.Visible (end) *@
+@if (tadsQrcodeDelete.COD.Visible) { // tadsQrcodeDelete.COD.Visible (begin)
+        <th class="@Html.Raw(tadsQrcodeDelete.COD.HeaderCellClass)"><span id="elh_TADS_QRCODE_COD" class="TADS_QRCODE_COD">@Html.Raw(tadsQrcodeDelete.COD.Caption)</span></th>
+} @* tadsQrcodeDelete.COD.Visible (end) *@
+@if (tadsQrcodeDelete.DES.Visible) { // tadsQrcodeDelete.DES.Visible (begin)
+        <th class="@Html.Raw(tadsQrcodeDelete.DES.HeaderCellClass)"><span id="elh_TADS_QRCODE_DES" class="TADS_QRCODE_DES">@Html.Raw(tadsQrcodeDelete.DES.Caption)</span></th>
+} @* tadsQrcodeDelete.DES.Visible (end) *@
+@if (tadsQrcodeDelete.CMD.Visible) { // tadsQrcodeDelete.CMD.Visible (begin)
+        <th class="@Html.Raw(tadsQrcodeDelete.CMD.HeaderCellClass)"><span id="elh_TADS_QRCODE_CMD" class="TADS_QRCODE_CMD">@Html.Raw(tadsQrcodeDelete.CMD.Caption)</span></th>
+} @* tadsQrcodeDelete.CMD.Visible (end) *@
+@if (tadsQrcodeDelete.FRM.Visible) { // tadsQrcodeDelete.FRM.Visible (begin)
+        <th class="@Html.Raw(tadsQrcodeDelete.FRM.HeaderCellClass)"><span id="elh_TADS_QRCODE_FRM" class="TADS_QRCODE_FRM">@Html.Raw(tadsQrcodeDelete.FRM.Caption)</span></th>
+} @* tadsQrcodeDelete.FRM.Visible (end) *@
+@if (tadsQrcodeDelete.LBL.Visible) { // tadsQrcodeDelete.LBL.Visible (begin)
+        <th class="@Html.Raw(tadsQrcodeDelete.LBL.HeaderCellClass)"><span id="elh_TADS_QRCODE_LBL" class="TADS_QRCODE_LBL">@Html.Raw(tadsQrcodeDelete.LBL.Caption)</span></th>
+} @* tadsQrcodeDelete.LBL.Visible (end) *@
+@if (tadsQrcodeDelete.COR.Visible) { // tadsQrcodeDelete.COR.Visible (begin)
+        <th class="@Html.Raw(tadsQrcodeDelete.COR.HeaderCellClass)"><span id="elh_TADS_QRCODE_COR" class="TADS_QRCODE_COR">@Html.Raw(tadsQrcodeDelete.COR.Caption)</span></th>
+} @* tadsQrcodeDelete.COR.Visible (end) *@
+@if (tadsQrcodeDelete.ETAPA.Visible) { // tadsQrcodeDelete.ETAPA.Visible (begin)
+        <th class="@Html.Raw(tadsQrcodeDelete.ETAPA.HeaderCellClass)"><span id="elh_TADS_QRCODE_ETAPA" class="TADS_QRCODE_ETAPA">@Html.Raw(tadsQrcodeDelete.ETAPA.Caption)</span></th>
+} @* tadsQrcodeDelete.ETAPA.Visible (end) *@
+@if (tadsQrcodeDelete.QRCODE.Visible) { // tadsQrcodeDelete.QRCODE.Visible (begin)
+        <th class="@Html.Raw(tadsQrcodeDelete.QRCODE.HeaderCellClass)"><span id="elh_TADS_QRCODE_QRCODE" class="TADS_QRCODE_QRCODE">@Html.Raw(tadsQrcodeDelete.QRCODE.Caption)</span></th>
+} @* tadsQrcodeDelete.QRCODE.Visible (end) *@
+@if (tadsQrcodeDelete.QRCODE2.Visible) { // tadsQrcodeDelete.QRCODE2.Visible (begin)
+        <th class="@Html.Raw(tadsQrcodeDelete.QRCODE2.HeaderCellClass)"><span id="elh_TADS_QRCODE_QRCODE2" class="TADS_QRCODE_QRCODE2">@Html.Raw(tadsQrcodeDelete.QRCODE2.Caption)</span></th>
+} @* tadsQrcodeDelete.QRCODE2.Visible (end) *@
+    </tr>
+    </thead>
+    <tbody>
+@{ tadsQrcodeDelete.RecordCount = 0; }
+@while (tadsQrcodeDelete.Recordset != null && await tadsQrcodeDelete.Recordset.ReadAsync()) { // DN
+    tadsQrcodeDelete.RecordCount++;
+    tadsQrcodeDelete.RowCount++;
+
+    // Set row properties
+    tadsQrcodeDelete.ResetAttributes();
+    tadsQrcodeDelete.RowType = RowType.View; // View
+
+    // Get the field contents
+    await tadsQrcodeDelete.LoadRowValues(tadsQrcodeDelete.Recordset);
+
+    // Render row
+    await tadsQrcodeDelete.RenderRow();
+    <tr @Html.Raw(tadsQrcodeDelete.RowAttributes)>
+@if (tadsQrcodeDelete.ID.Visible) { // tadsQrcodeDelete.ID.Visible (begin)
+        <td @Html.Raw(tadsQrcodeDelete.ID.CellAttributes)>
+<span id="">
+<span @Html.Raw(tadsQrcodeDelete.ID.ViewAttributes)>
+@Html.Raw(tadsQrcodeDelete.ID.GetViewValue())</span>
+</span></td>
+} @* tadsQrcodeDelete.ID.Visible (end) *@
+@if (tadsQrcodeDelete.COD.Visible) { // tadsQrcodeDelete.COD.Visible (begin)
+        <td @Html.Raw(tadsQrcodeDelete.COD.CellAttributes)>
+<span id="">
+<span @Html.Raw(tadsQrcodeDelete.COD.ViewAttributes)>
+@Html.Raw(tadsQrcodeDelete.COD.GetViewValue())</span>
+</span></td>
+} @* tadsQrcodeDelete.COD.Visible (end) *@
+@if (tadsQrcodeDelete.DES.Visible) { // tadsQrcodeDelete.DES.Visible (begin)
+        <td @Html.Raw(tadsQrcodeDelete.DES.CellAttributes)>
+<span id="">
+<span @Html.Raw(tadsQrcodeDelete.DES.ViewAttributes)>
+@Html.Raw(tadsQrcodeDelete.DES.GetViewValue())</span>
+</span></td>
+} @* tadsQrcodeDelete.DES.Visible (end) *@
+@if (tadsQrcodeDelete.CMD.Visible) { // tadsQrcodeDelete.CMD.Visible (begin)
+        <td @Html.Raw(tadsQrcodeDelete.CMD.CellAttributes)>
+<span id="">
+<span @Html.Raw(tadsQrcodeDelete.CMD.ViewAttributes)>
+@Html.Raw(tadsQrcodeDelete.CMD.GetViewValue())</span>
+</span></td>
+} @* tadsQrcodeDelete.CMD.Visible (end) *@
+@if (tadsQrcodeDelete.FRM.Visible) { // tadsQrcodeDelete.FRM.Visible (begin)
+        <td @Html.Raw(tadsQrcodeDelete.FRM.CellAttributes)>
+<span id="">
+<span @Html.Raw(tadsQrcodeDelete.FRM.ViewAttributes)>
+@Html.Raw(tadsQrcodeDelete.FRM.GetViewValue())</span>
+</span></td>
+} @* tadsQrcodeDelete.FRM.Visible (end) *@
+@if (tadsQrcodeDelete.LBL.Visible) { // tadsQrcodeDelete.LBL.Visible (begin)
+        <td @Html.Raw(tadsQrcodeDelete.LBL.CellAttributes)>
+<span id="">
+<span @Html.Raw(tadsQrcodeDelete.LBL.ViewAttributes)>
+@Html.Raw(tadsQrcodeDelete.LBL.GetViewValue())</span>
+</span></td>
+} @* tadsQrcodeDelete.LBL.Visible (end) *@
+@if (tadsQrcodeDelete.COR.Visible) { // tadsQrcodeDelete.COR.Visible (begin)
+        <td @Html.Raw(tadsQrcodeDelete.COR.CellAttributes)>
+<span id="">
+<span @Html.Raw(tadsQrcodeDelete.COR.ViewAttributes)>
+@Html.Raw(tadsQrcodeDelete.COR.GetViewValue())</span>
+</span></td>
+} @* tadsQrcodeDelete.COR.Visible (end) *@
+@if (tadsQrcodeDelete.ETAPA.Visible) { // tadsQrcodeDelete.ETAPA.Visible (begin)
+        <td @Html.Raw(tadsQrcodeDelete.ETAPA.CellAttributes)>
+<span id="">
+<span @Html.Raw(tadsQrcodeDelete.ETAPA.ViewAttributes)>
+@Html.Raw(tadsQrcodeDelete.ETAPA.GetViewValue())</span>
+</span></td>
+} @* tadsQrcodeDelete.ETAPA.Visible (end) *@
+@if (tadsQrcodeDelete.QRCODE.Visible) { // tadsQrcodeDelete.QRCODE.Visible (begin)
+        <td @Html.Raw(tadsQrcodeDelete.QRCODE.CellAttributes)>
+<span id="">
+<span @Html.Raw(tadsQrcodeDelete.QRCODE.ViewAttributes)>
+@Html.Raw(await GetFileViewTag((DbField)tadsQrcodeDelete.QRCODE, ConvertToString(tadsQrcodeDelete.QRCODE.GetViewValue()), false))
+</span>
+</span></td>
+} @* tadsQrcodeDelete.QRCODE.Visible (end) *@
+@if (tadsQrcodeDelete.QRCODE2.Visible) { // tadsQrcodeDelete.QRCODE2.Visible (begin)
+        <td @Html.Raw(tadsQrcodeDelete.QRCODE2.CellAttributes)>
+<span id="">
+<span @Html.Raw(tadsQrcodeDelete.QRCODE2.ViewAttributes)>
+@Html.Raw(tadsQrcodeDelete.QRCODE2.GetViewValue())</span>
+</span></td>
+} @* tadsQrcodeDelete.QRCODE2.Visible (end) *@
+    </tr>
+}
+@{ tadsQrcodeDelete.CloseRecordset(); }
+</tbody>
+</table>
+</div>
+</div>
+<div class="ew-buttons ew-desktop-buttons">
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("DeleteBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(tadsQrcodeDelete.ReturnUrl)">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+</div>
+</form>
+@tadsQrcodeDelete.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>

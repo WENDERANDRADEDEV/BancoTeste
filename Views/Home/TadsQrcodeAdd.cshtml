@@ -1,0 +1,355 @@
+@{
+    // View
+    View = this;
+
+    // Check action result
+    if (tadsQrcodeAdd.ActionResult is EmptyResult) { // Terminate page
+        return;
+    }
+
+    // Layout
+    if (!tadsQrcodeAdd.UseLayout) // UseLayout = false // DN
+        Layout = "";
+    else
+        Layout = "_Layout";
+
+    // Local variables (Temp data)
+    #pragma warning disable 168
+    string? sqlWrk, filterWrk, whereWrk, curVal, dispVal;
+    List<Dictionary<string, object>>? rswrk;
+    string[]? arWrk;
+    List<object?>? listWrk;
+    object? guidWrk;
+    Func<string>? lookupFilter;
+    #pragma warning restore 168
+}
+<script>
+var currentTable = @Html.Raw(ConvertToJson(tadsQrcodeAdd.ToClientVar()));
+ew.deepAssign(ew.vars, { tables: { TADS_QRCODE: currentTable } });
+var currentPageID = ew.PAGE_ID = "add";
+var currentForm;
+var fTADS_QRCODEadd;
+loadjs.ready(["wrapper", "head"], function () {
+    let $ = jQuery;
+    let fields = currentTable.fields;
+
+    // Form object
+    let form = new ew.FormBuilder()
+        .setId("fTADS_QRCODEadd")
+        .setPageId("add")
+
+        // Add fields
+        .setFields([
+
+            ["COD", [fields.COD.visible && fields.COD.required ? ew.Validators.required(fields.COD.caption) : null], fields.COD.isInvalid],
+            ["DES", [fields.DES.visible && fields.DES.required ? ew.Validators.required(fields.DES.caption) : null], fields.DES.isInvalid],
+            ["CMD", [fields.CMD.visible && fields.CMD.required ? ew.Validators.required(fields.CMD.caption) : null], fields.CMD.isInvalid],
+            ["FRM", [fields.FRM.visible && fields.FRM.required ? ew.Validators.required(fields.FRM.caption) : null], fields.FRM.isInvalid],
+            ["LBL", [fields.LBL.visible && fields.LBL.required ? ew.Validators.required(fields.LBL.caption) : null], fields.LBL.isInvalid],
+            ["COR", [fields.COR.visible && fields.COR.required ? ew.Validators.required(fields.COR.caption) : null], fields.COR.isInvalid],
+            ["ETAPA", [fields.ETAPA.visible && fields.ETAPA.required ? ew.Validators.required(fields.ETAPA.caption) : null], fields.ETAPA.isInvalid],
+            ["QRCODE", [fields.QRCODE.visible && fields.QRCODE.required ? ew.Validators.fileRequired(fields.QRCODE.caption) : null], fields.QRCODE.isInvalid],
+            ["QRCODE2", [fields.QRCODE2.visible && fields.QRCODE2.required ? ew.Validators.required(fields.QRCODE2.caption) : null], fields.QRCODE2.isInvalid]
+        ])
+
+        // Form_CustomValidate
+        .setCustomValidate(
+            function(fobj) { // DO NOT CHANGE THIS LINE!
+                    // Your custom validation code here, return false if invalid.
+                    return true;
+                }
+        )
+
+        // Use JavaScript validation or not
+        .setValidateRequired(ew.CLIENT_VALIDATE)
+
+        // Dynamic selection lists
+        .setLists({
+        })
+        .build();
+    window[form.id] = form;
+    currentForm = form;
+    loadjs.done(form.id);
+});
+</script>
+<script>
+loadjs.ready("head", function() {
+    // Write your client script here, no need to add script tags.
+});
+</script>
+@tadsQrcodeAdd.ShowPageHeader()
+@tadsQrcodeAdd.ShowMessages()
+<form name="fTADS_QRCODEadd" id="fTADS_QRCODEadd" class="@(tadsQrcodeAdd.FormClassName)" action="@AppPath(CurrentPageName())" method="post" novalidate autocomplete="off">
+@if (CurrentPage.CheckToken) {
+    <input type="hidden" name="@Config.TokenNameKey" value="@Config.TokenName"><!-- CSRF token name -->
+    @Html.AntiForgeryToken()
+}
+@if (tadsQrcodeAdd.IsConfirm) { // Confirm page
+<input type="hidden" name="action" id="action" value="insert">
+<input type="hidden" name="confirm" id="confirm" value="confirm">
+} else {
+<input type="hidden" name="action" id="action" value="confirm">
+}
+<input type="hidden" name="modal" value="@ConvertToInt(tadsQrcodeAdd.IsModal)">
+@if (IsJsonResponse()) {
+<input type="hidden" name="json" value="1">
+}
+<input type="hidden" name="@(tadsQrcodeAdd.OldKeyName)" value="@Html.Raw(tadsQrcodeAdd.OldKey)">
+<div class="ew-add-div"><!-- page* -->
+@if (tadsQrcodeAdd.COD.Visible) { // tadsQrcodeAdd.COD.Visible (begin)
+    <div id="r_COD" @Html.Raw(tadsQrcodeAdd.COD.RowAttributes)>
+        <label id="elh_TADS_QRCODE_COD" for="x_COD" class="@(tadsQrcodeAdd.LeftColumnClass)">@Html.Raw(tadsQrcodeAdd.COD.Caption)@Html.Raw(tadsQrcodeAdd.COD.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(tadsQrcodeAdd.RightColumnClass)"><div @Html.Raw(tadsQrcodeAdd.COD.CellAttributes)>
+@if (!tadsQrcodeAdd.IsConfirm) { // COD (begin)
+<span id="el_TADS_QRCODE_COD">
+<input type="@(tadsQrcodeAdd.COD.InputTextType)" name="x_COD" id="x_COD" data-table="TADS_QRCODE" data-field="x_COD" value="@Html.Raw(tadsQrcodeAdd.COD.EditValue)" size="30" maxlength="50" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeAdd.COD.PlaceHolder))" data-format-pattern="@(tadsQrcodeAdd.COD.FormatPattern)"@Html.Raw(tadsQrcodeAdd.COD.EditAttributes) aria-describedby="x_COD_help">
+@Html.Raw(tadsQrcodeAdd.COD.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(tadsQrcodeAdd.COD.GetErrorMessage())</div>
+</span>
+} else { // COD (confirm)
+<span id="el_TADS_QRCODE_COD">
+<span @Html.Raw(tadsQrcodeAdd.COD.ViewAttributes)>
+<input type="text" readonly class="form-control-plaintext" value="@Html.Raw(RemoveHtml(ConvertToString(tadsQrcodeAdd.COD.ViewValue)))"></span>
+<input type="hidden" data-table="TADS_QRCODE" data-field="x_COD" data-hidden="1" name="x_COD" id="x_COD" value="@Html.Raw(HtmlEncode(tadsQrcodeAdd.COD.FormValue))">
+</span>
+} @* COD (end) *@
+</div></div>
+    </div>
+} @* tadsQrcodeAdd.COD.Visible (end) *@
+@if (tadsQrcodeAdd.DES.Visible) { // tadsQrcodeAdd.DES.Visible (begin)
+    <div id="r_DES" @Html.Raw(tadsQrcodeAdd.DES.RowAttributes)>
+        <label id="elh_TADS_QRCODE_DES" for="x_DES" class="@(tadsQrcodeAdd.LeftColumnClass)">@Html.Raw(tadsQrcodeAdd.DES.Caption)@Html.Raw(tadsQrcodeAdd.DES.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(tadsQrcodeAdd.RightColumnClass)"><div @Html.Raw(tadsQrcodeAdd.DES.CellAttributes)>
+@if (!tadsQrcodeAdd.IsConfirm) { // DES (begin)
+<span id="el_TADS_QRCODE_DES">
+<input type="@(tadsQrcodeAdd.DES.InputTextType)" name="x_DES" id="x_DES" data-table="TADS_QRCODE" data-field="x_DES" value="@Html.Raw(tadsQrcodeAdd.DES.EditValue)" size="30" maxlength="500" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeAdd.DES.PlaceHolder))" data-format-pattern="@(tadsQrcodeAdd.DES.FormatPattern)"@Html.Raw(tadsQrcodeAdd.DES.EditAttributes) aria-describedby="x_DES_help">
+@Html.Raw(tadsQrcodeAdd.DES.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(tadsQrcodeAdd.DES.GetErrorMessage())</div>
+</span>
+} else { // DES (confirm)
+<span id="el_TADS_QRCODE_DES">
+<span @Html.Raw(tadsQrcodeAdd.DES.ViewAttributes)>
+<input type="text" readonly class="form-control-plaintext" value="@Html.Raw(RemoveHtml(ConvertToString(tadsQrcodeAdd.DES.ViewValue)))"></span>
+<input type="hidden" data-table="TADS_QRCODE" data-field="x_DES" data-hidden="1" name="x_DES" id="x_DES" value="@Html.Raw(HtmlEncode(tadsQrcodeAdd.DES.FormValue))">
+</span>
+} @* DES (end) *@
+</div></div>
+    </div>
+} @* tadsQrcodeAdd.DES.Visible (end) *@
+@if (tadsQrcodeAdd.CMD.Visible) { // tadsQrcodeAdd.CMD.Visible (begin)
+    <div id="r_CMD" @Html.Raw(tadsQrcodeAdd.CMD.RowAttributes)>
+        <label id="elh_TADS_QRCODE_CMD" for="x_CMD" class="@(tadsQrcodeAdd.LeftColumnClass)">@Html.Raw(tadsQrcodeAdd.CMD.Caption)@Html.Raw(tadsQrcodeAdd.CMD.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(tadsQrcodeAdd.RightColumnClass)"><div @Html.Raw(tadsQrcodeAdd.CMD.CellAttributes)>
+@if (!tadsQrcodeAdd.IsConfirm) { // CMD (begin)
+<span id="el_TADS_QRCODE_CMD">
+<input type="@(tadsQrcodeAdd.CMD.InputTextType)" name="x_CMD" id="x_CMD" data-table="TADS_QRCODE" data-field="x_CMD" value="@Html.Raw(tadsQrcodeAdd.CMD.EditValue)" size="30" maxlength="100" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeAdd.CMD.PlaceHolder))" data-format-pattern="@(tadsQrcodeAdd.CMD.FormatPattern)"@Html.Raw(tadsQrcodeAdd.CMD.EditAttributes) aria-describedby="x_CMD_help">
+@Html.Raw(tadsQrcodeAdd.CMD.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(tadsQrcodeAdd.CMD.GetErrorMessage())</div>
+</span>
+} else { // CMD (confirm)
+<span id="el_TADS_QRCODE_CMD">
+<span @Html.Raw(tadsQrcodeAdd.CMD.ViewAttributes)>
+<input type="text" readonly class="form-control-plaintext" value="@Html.Raw(RemoveHtml(ConvertToString(tadsQrcodeAdd.CMD.ViewValue)))"></span>
+<input type="hidden" data-table="TADS_QRCODE" data-field="x_CMD" data-hidden="1" name="x_CMD" id="x_CMD" value="@Html.Raw(HtmlEncode(tadsQrcodeAdd.CMD.FormValue))">
+</span>
+} @* CMD (end) *@
+</div></div>
+    </div>
+} @* tadsQrcodeAdd.CMD.Visible (end) *@
+@if (tadsQrcodeAdd.FRM.Visible) { // tadsQrcodeAdd.FRM.Visible (begin)
+    <div id="r_FRM" @Html.Raw(tadsQrcodeAdd.FRM.RowAttributes)>
+        <label id="elh_TADS_QRCODE_FRM" for="x_FRM" class="@(tadsQrcodeAdd.LeftColumnClass)">@Html.Raw(tadsQrcodeAdd.FRM.Caption)@Html.Raw(tadsQrcodeAdd.FRM.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(tadsQrcodeAdd.RightColumnClass)"><div @Html.Raw(tadsQrcodeAdd.FRM.CellAttributes)>
+@if (!tadsQrcodeAdd.IsConfirm) { // FRM (begin)
+<span id="el_TADS_QRCODE_FRM">
+<input type="@(tadsQrcodeAdd.FRM.InputTextType)" name="x_FRM" id="x_FRM" data-table="TADS_QRCODE" data-field="x_FRM" value="@Html.Raw(tadsQrcodeAdd.FRM.EditValue)" size="30" maxlength="50" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeAdd.FRM.PlaceHolder))" data-format-pattern="@(tadsQrcodeAdd.FRM.FormatPattern)"@Html.Raw(tadsQrcodeAdd.FRM.EditAttributes) aria-describedby="x_FRM_help">
+@Html.Raw(tadsQrcodeAdd.FRM.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(tadsQrcodeAdd.FRM.GetErrorMessage())</div>
+</span>
+} else { // FRM (confirm)
+<span id="el_TADS_QRCODE_FRM">
+<span @Html.Raw(tadsQrcodeAdd.FRM.ViewAttributes)>
+<input type="text" readonly class="form-control-plaintext" value="@Html.Raw(RemoveHtml(ConvertToString(tadsQrcodeAdd.FRM.ViewValue)))"></span>
+<input type="hidden" data-table="TADS_QRCODE" data-field="x_FRM" data-hidden="1" name="x_FRM" id="x_FRM" value="@Html.Raw(HtmlEncode(tadsQrcodeAdd.FRM.FormValue))">
+</span>
+} @* FRM (end) *@
+</div></div>
+    </div>
+} @* tadsQrcodeAdd.FRM.Visible (end) *@
+@if (tadsQrcodeAdd.LBL.Visible) { // tadsQrcodeAdd.LBL.Visible (begin)
+    <div id="r_LBL" @Html.Raw(tadsQrcodeAdd.LBL.RowAttributes)>
+        <label id="elh_TADS_QRCODE_LBL" for="x_LBL" class="@(tadsQrcodeAdd.LeftColumnClass)">@Html.Raw(tadsQrcodeAdd.LBL.Caption)@Html.Raw(tadsQrcodeAdd.LBL.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(tadsQrcodeAdd.RightColumnClass)"><div @Html.Raw(tadsQrcodeAdd.LBL.CellAttributes)>
+@if (!tadsQrcodeAdd.IsConfirm) { // LBL (begin)
+<span id="el_TADS_QRCODE_LBL">
+<input type="@(tadsQrcodeAdd.LBL.InputTextType)" name="x_LBL" id="x_LBL" data-table="TADS_QRCODE" data-field="x_LBL" value="@Html.Raw(tadsQrcodeAdd.LBL.EditValue)" size="30" maxlength="150" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeAdd.LBL.PlaceHolder))" data-format-pattern="@(tadsQrcodeAdd.LBL.FormatPattern)"@Html.Raw(tadsQrcodeAdd.LBL.EditAttributes) aria-describedby="x_LBL_help">
+@Html.Raw(tadsQrcodeAdd.LBL.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(tadsQrcodeAdd.LBL.GetErrorMessage())</div>
+</span>
+} else { // LBL (confirm)
+<span id="el_TADS_QRCODE_LBL">
+<span @Html.Raw(tadsQrcodeAdd.LBL.ViewAttributes)>
+<input type="text" readonly class="form-control-plaintext" value="@Html.Raw(RemoveHtml(ConvertToString(tadsQrcodeAdd.LBL.ViewValue)))"></span>
+<input type="hidden" data-table="TADS_QRCODE" data-field="x_LBL" data-hidden="1" name="x_LBL" id="x_LBL" value="@Html.Raw(HtmlEncode(tadsQrcodeAdd.LBL.FormValue))">
+</span>
+} @* LBL (end) *@
+</div></div>
+    </div>
+} @* tadsQrcodeAdd.LBL.Visible (end) *@
+@if (tadsQrcodeAdd.COR.Visible) { // tadsQrcodeAdd.COR.Visible (begin)
+    <div id="r_COR" @Html.Raw(tadsQrcodeAdd.COR.RowAttributes)>
+        <label id="elh_TADS_QRCODE_COR" for="x_COR" class="@(tadsQrcodeAdd.LeftColumnClass)">@Html.Raw(tadsQrcodeAdd.COR.Caption)@Html.Raw(tadsQrcodeAdd.COR.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(tadsQrcodeAdd.RightColumnClass)"><div @Html.Raw(tadsQrcodeAdd.COR.CellAttributes)>
+@if (!tadsQrcodeAdd.IsConfirm) { // COR (begin)
+<span id="el_TADS_QRCODE_COR">
+<input type="@(tadsQrcodeAdd.COR.InputTextType)" name="x_COR" id="x_COR" data-table="TADS_QRCODE" data-field="x_COR" value="@Html.Raw(tadsQrcodeAdd.COR.EditValue)" size="30" maxlength="150" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeAdd.COR.PlaceHolder))" data-format-pattern="@(tadsQrcodeAdd.COR.FormatPattern)"@Html.Raw(tadsQrcodeAdd.COR.EditAttributes) aria-describedby="x_COR_help">
+@Html.Raw(tadsQrcodeAdd.COR.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(tadsQrcodeAdd.COR.GetErrorMessage())</div>
+</span>
+} else { // COR (confirm)
+<span id="el_TADS_QRCODE_COR">
+<span @Html.Raw(tadsQrcodeAdd.COR.ViewAttributes)>
+<input type="text" readonly class="form-control-plaintext" value="@Html.Raw(RemoveHtml(ConvertToString(tadsQrcodeAdd.COR.ViewValue)))"></span>
+<input type="hidden" data-table="TADS_QRCODE" data-field="x_COR" data-hidden="1" name="x_COR" id="x_COR" value="@Html.Raw(HtmlEncode(tadsQrcodeAdd.COR.FormValue))">
+</span>
+} @* COR (end) *@
+</div></div>
+    </div>
+} @* tadsQrcodeAdd.COR.Visible (end) *@
+@if (tadsQrcodeAdd.ETAPA.Visible) { // tadsQrcodeAdd.ETAPA.Visible (begin)
+    <div id="r_ETAPA" @Html.Raw(tadsQrcodeAdd.ETAPA.RowAttributes)>
+        <label id="elh_TADS_QRCODE_ETAPA" for="x_ETAPA" class="@(tadsQrcodeAdd.LeftColumnClass)">@Html.Raw(tadsQrcodeAdd.ETAPA.Caption)@Html.Raw(tadsQrcodeAdd.ETAPA.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(tadsQrcodeAdd.RightColumnClass)"><div @Html.Raw(tadsQrcodeAdd.ETAPA.CellAttributes)>
+@if (!tadsQrcodeAdd.IsConfirm) { // ETAPA (begin)
+<span id="el_TADS_QRCODE_ETAPA">
+<input type="@(tadsQrcodeAdd.ETAPA.InputTextType)" name="x_ETAPA" id="x_ETAPA" data-table="TADS_QRCODE" data-field="x_ETAPA" value="@Html.Raw(tadsQrcodeAdd.ETAPA.EditValue)" size="30" maxlength="150" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeAdd.ETAPA.PlaceHolder))" data-format-pattern="@(tadsQrcodeAdd.ETAPA.FormatPattern)"@Html.Raw(tadsQrcodeAdd.ETAPA.EditAttributes) aria-describedby="x_ETAPA_help">
+@Html.Raw(tadsQrcodeAdd.ETAPA.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(tadsQrcodeAdd.ETAPA.GetErrorMessage())</div>
+</span>
+} else { // ETAPA (confirm)
+<span id="el_TADS_QRCODE_ETAPA">
+<span @Html.Raw(tadsQrcodeAdd.ETAPA.ViewAttributes)>
+<input type="text" readonly class="form-control-plaintext" value="@Html.Raw(RemoveHtml(ConvertToString(tadsQrcodeAdd.ETAPA.ViewValue)))"></span>
+<input type="hidden" data-table="TADS_QRCODE" data-field="x_ETAPA" data-hidden="1" name="x_ETAPA" id="x_ETAPA" value="@Html.Raw(HtmlEncode(tadsQrcodeAdd.ETAPA.FormValue))">
+</span>
+} @* ETAPA (end) *@
+</div></div>
+    </div>
+} @* tadsQrcodeAdd.ETAPA.Visible (end) *@
+@if (tadsQrcodeAdd.QRCODE.Visible) { // tadsQrcodeAdd.QRCODE.Visible (begin)
+    <div id="r_QRCODE" @Html.Raw(tadsQrcodeAdd.QRCODE.RowAttributes)>
+        <label id="elh_TADS_QRCODE_QRCODE" class="@(tadsQrcodeAdd.LeftColumnClass)">@Html.Raw(tadsQrcodeAdd.QRCODE.Caption)@Html.Raw(tadsQrcodeAdd.QRCODE.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(tadsQrcodeAdd.RightColumnClass)"><div @Html.Raw(tadsQrcodeAdd.QRCODE.CellAttributes)>
+@if (!tadsQrcodeAdd.IsConfirm) { // QRCODE (begin)
+<span id="el_TADS_QRCODE_QRCODE">
+<div id="fd_x_QRCODE" class="fileinput-button ew-file-drop-zone">
+    <input
+        type="file"
+        id="x_QRCODE"
+        name="x_QRCODE"
+        class="form-control ew-file-input"
+        title="@(tadsQrcodeAdd.QRCODE.Title)"
+        lang="@(CurrentLanguageID)"
+        data-table="TADS_QRCODE"
+        data-field="x_QRCODE"
+        data-size="50"
+        data-accept-file-types="@(tadsQrcodeAdd.QRCODE.AcceptFileTypes)"
+        data-max-file-size="@(tadsQrcodeAdd.QRCODE.UploadMaxFileSize)"
+        data-max-number-of-files="null"
+        data-disable-image-crop="@(tadsQrcodeAdd.QRCODE.ImageCropper ? 0 : 1)"
+        aria-describedby="x_QRCODE_help"
+        @Html.Raw((tadsQrcodeAdd.QRCODE.ReadOnly || tadsQrcodeAdd.QRCODE.Disabled) ? " disabled" : "")
+        @Html.Raw(tadsQrcodeAdd.QRCODE.EditAttributes)
+    >
+    <div class="text-muted ew-file-text">@Html.Raw(Language.Phrase("ChooseFile"))</div>
+</div>
+@Html.Raw(tadsQrcodeAdd.QRCODE.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(tadsQrcodeAdd.QRCODE.GetErrorMessage())</div>
+<input type="hidden" name="fn_x_QRCODE" id= "fn_x_QRCODE" value="@(tadsQrcodeAdd.QRCODE.Upload.FileName)">
+<input type="hidden" name="fa_x_QRCODE" id= "fa_x_QRCODE" value="0">
+<table id="ft_x_QRCODE" class="table table-sm float-start ew-upload-table"><tbody class="files"></tbody></table>
+</span>
+} else { // QRCODE (confirm)
+<span id="el_TADS_QRCODE_QRCODE">
+<div id="fd_x_QRCODE">
+    <input
+        type="file"
+        id="x_QRCODE"
+        name="x_QRCODE"
+        class="form-control ew-file-input d-none"
+        title="@(tadsQrcodeAdd.QRCODE.Title)"
+        lang="@(CurrentLanguageID)"
+        data-table="TADS_QRCODE"
+        data-field="x_QRCODE"
+        data-size="50"
+        data-accept-file-types="@(tadsQrcodeAdd.QRCODE.AcceptFileTypes)"
+        data-max-file-size="@(tadsQrcodeAdd.QRCODE.UploadMaxFileSize)"
+        data-max-number-of-files="null"
+        data-disable-image-crop="@(tadsQrcodeAdd.QRCODE.ImageCropper ? 0 : 1)"
+        aria-describedby="x_QRCODE_help"
+        @Html.Raw(tadsQrcodeAdd.QRCODE.EditAttributes)
+    >
+</div>
+@Html.Raw(tadsQrcodeAdd.QRCODE.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(tadsQrcodeAdd.QRCODE.GetErrorMessage())</div>
+<input type="hidden" name="fn_x_QRCODE" id= "fn_x_QRCODE" value="@(tadsQrcodeAdd.QRCODE.Upload.FileName)">
+<input type="hidden" name="fa_x_QRCODE" id= "fa_x_QRCODE" value="0">
+<table id="ft_x_QRCODE" class="table table-sm float-start ew-upload-table"><tbody class="files"></tbody></table>
+</span>
+} @* QRCODE (end) *@
+</div></div>
+    </div>
+} @* tadsQrcodeAdd.QRCODE.Visible (end) *@
+@if (tadsQrcodeAdd.QRCODE2.Visible) { // tadsQrcodeAdd.QRCODE2.Visible (begin)
+    <div id="r_QRCODE2" @Html.Raw(tadsQrcodeAdd.QRCODE2.RowAttributes)>
+        <label id="elh_TADS_QRCODE_QRCODE2" for="x_QRCODE2" class="@(tadsQrcodeAdd.LeftColumnClass)">@Html.Raw(tadsQrcodeAdd.QRCODE2.Caption)@Html.Raw(tadsQrcodeAdd.QRCODE2.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+        <div class="@(tadsQrcodeAdd.RightColumnClass)"><div @Html.Raw(tadsQrcodeAdd.QRCODE2.CellAttributes)>
+@if (!tadsQrcodeAdd.IsConfirm) { // QRCODE2 (begin)
+<span id="el_TADS_QRCODE_QRCODE2">
+<textarea data-table="TADS_QRCODE" data-field="x_QRCODE2" name="x_QRCODE2" id="x_QRCODE2" cols="35" rows="4" placeholder="@Html.Raw(HtmlEncode(tadsQrcodeAdd.QRCODE2.PlaceHolder))"@Html.Raw(tadsQrcodeAdd.QRCODE2.EditAttributes) aria-describedby="x_QRCODE2_help">@(tadsQrcodeAdd.QRCODE2.EditValue)</textarea>
+@Html.Raw(tadsQrcodeAdd.QRCODE2.GetCustomMessage)
+<div class="invalid-feedback">@Html.Raw(tadsQrcodeAdd.QRCODE2.GetErrorMessage())</div>
+</span>
+} else { // QRCODE2 (confirm)
+<span id="el_TADS_QRCODE_QRCODE2">
+<span @Html.Raw(tadsQrcodeAdd.QRCODE2.ViewAttributes)>
+@Html.Raw(tadsQrcodeAdd.QRCODE2.ViewValue)</span>
+<input type="hidden" data-table="TADS_QRCODE" data-field="x_QRCODE2" data-hidden="1" name="x_QRCODE2" id="x_QRCODE2" value="@Html.Raw(HtmlEncode(tadsQrcodeAdd.QRCODE2.FormValue))">
+</span>
+} @* QRCODE2 (end) *@
+</div></div>
+    </div>
+} @* tadsQrcodeAdd.QRCODE2.Visible (end) *@
+</div><!-- /page* -->
+@{ tadsQrcodeAdd.CloseRecordset(); }
+@Html.Raw(tadsQrcodeAdd.IsModal ? "<template class=\"ew-modal-buttons\">" : "<div class=\"row ew-buttons\">")<!-- buttons .row -->
+    <div class="@(tadsQrcodeAdd.OffsetColumnClass)"><!-- buttons offset -->
+@if (!tadsQrcodeAdd.IsConfirm) { // Confirm page
+    <button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit" form="fTADS_QRCODEadd" data-ew-action="set-action" data-value="confirm">@Html.Raw(Language.Phrase("AddBtn"))</button>
+@if (IsJsonResponse()) {
+    <button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-bs-dismiss="modal">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+} else {
+    <button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" form="fTADS_QRCODEadd" data-href="@AppPath(tadsQrcodeAdd.ReturnUrl)">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+}
+} else {
+    <button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit" form="fTADS_QRCODEadd">@Html.Raw(Language.Phrase("ConfirmBtn"))</button>
+    <button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="submit" form="fTADS_QRCODEadd" data-ew-action="set-action" data-value="cancel">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+}
+    </div><!-- /buttons offset -->
+@Html.Raw(tadsQrcodeAdd.IsModal ? "</template>" : "</div>")<!-- /buttons .row -->
+</form>
+@tadsQrcodeAdd.ShowPageFooter()
+@Html.Raw(GetDebugMessage())
+@ElapsedTime()
+<script>
+// Field event handlers
+loadjs.ready("head", function() {
+    ew.addEventHandlers("TADS_QRCODE");
+});
+</script>
+<script>
+loadjs.ready("load", function() {
+    // Write your table-specific startup script here
+    // document.write("page loaded");
+});
+</script>
